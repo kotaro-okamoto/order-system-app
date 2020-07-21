@@ -5,7 +5,7 @@
         <v-card-title class="pa-0 ma-0">
           <v-row justify="center">
             <v-col cols="12" sm="6" md="4" class="pa-0 ma-0">
-              <span>注文管理</span>
+              <span>{{$t("OrderManage")}}</span>
             </v-col>
           </v-row>
         </v-card-title>
@@ -13,7 +13,13 @@
           <v-container>
             <v-row justify="center">
               <v-col cols="12" sm="6" md="4" class="pa-0 ma-0">
-                <v-btn rounded color="primary" dark to="/orderSheet" target="_blank">注文確認へ移動</v-btn>
+                <v-btn
+                  rounded
+                  color="primary"
+                  dark
+                  to="/orderSheet"
+                  target="_blank"
+                >{{$t("OrderHistory")}}</v-btn>
               </v-col>
             </v-row>
           </v-container>
@@ -25,7 +31,7 @@
         <v-card-title class="pa-0 ma-0">
           <v-row justify="center">
             <v-col cols="12" sm="6" md="4" class="pa-0 ma-0">
-              <span>ユーザ向け画面作成</span>
+              <span>{{$t("CreateForUser")}}</span>
             </v-col>
           </v-row>
         </v-card-title>
@@ -75,7 +81,7 @@
                     group: this.selectedGroup.groupName
                   }}"
                   target="_blank"
-                >印刷用ページへ移動</v-btn>
+                >{{$t("PrintPage")}}</v-btn>
               </v-col>
               <v-col cols="12" xs="12" sm="6" md="6" lg="6" xl="6" class="pa-0 mx-0 my-3">
                 <v-btn
@@ -88,7 +94,7 @@
                     category: this.selectedCategory.name,
                     group: this.selectedGroup.groupName
                   }}"
-                >生成ページへ移動</v-btn>
+                >{{$t("OrderPage")}}</v-btn>
               </v-col>
             </v-row>
           </v-container>
@@ -100,7 +106,7 @@
         <v-card-title>
           <v-row justify="center">
             <v-col cols="12" sm="6" md="4" class="pa-0 ma-0">
-              <span>メンテナンス</span>
+              <span>{{$t("Maintenance")}}</span>
             </v-col>
           </v-row>
         </v-card-title>
@@ -133,7 +139,7 @@
                   dark
                   :to="{name: 'MenuMaintenance'}"
                   target="_blank"
-                >メニュー</v-btn>
+                >{{$t("Menu")}}</v-btn>
               </v-col>
             </v-row>
           </v-container>

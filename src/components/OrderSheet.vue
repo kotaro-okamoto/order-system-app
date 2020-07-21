@@ -10,15 +10,25 @@
               class="pa-0 text-truncate"
               align="center"
               @click="sortItems('table')"
-            >テーブル</v-col>
-            <v-col cols="3" class="pa-0 text-truncate" align="center" @click="sortItems('name')">名前</v-col>
-            <v-col cols="1" class="pa-0 text-truncate" align="center" @click="sortItems('count')">数量</v-col>
+            >{{$t("Table")}}</v-col>
+            <v-col
+              cols="3"
+              class="pa-0 text-truncate"
+              align="center"
+              @click="sortItems('name')"
+            >{{$t("Name")}}</v-col>
+            <v-col
+              cols="1"
+              class="pa-0 text-truncate"
+              align="center"
+              @click="sortItems('count')"
+            >{{$t("Count")}}</v-col>
             <v-col
               cols="4"
               class="pa-0 text-truncate"
               align="center"
               @click="sortItems('time')"
-            >注文時刻</v-col>
+            >{{$t("TimestampOfOrder")}}</v-col>
           </v-row>
         </v-container>
       </v-card>

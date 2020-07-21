@@ -7,7 +7,7 @@
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">New Item</v-btn>
+            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">{{$t("NewItem")}}</v-btn>
           </template>
           <v-card>
             <v-card-title>
@@ -43,8 +43,8 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn rounded color="primary" dark @click="close">キャンセル</v-btn>
-              <v-btn rounded color="primary" dark @click="save">保存</v-btn>
+              <v-btn rounded color="primary" dark @click="close">{{$t("Cancel")}}</v-btn>
+              <v-btn rounded color="primary" dark @click="save">{{$t("Save")}}</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
