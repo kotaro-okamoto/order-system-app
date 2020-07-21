@@ -3,10 +3,10 @@
     <input type="checkbox" id="chk" v-model="isDrawerShow" />
     <div>
       <v-list>
-        <v-list-group no-action sub-group v-for="menu of this.menus" :key="menu.categoryId">
+        <v-list-group no-action sub-group v-for="menu of this.menus" :key="menu.index">
           <template v-slot:activator>
             <v-list-item-content>
-              <v-list-item-title v-text="menu.categoryName">sublistlabel</v-list-item-title>
+              <v-list-item-title v-text="menu.groupByValue">sublistlabel</v-list-item-title>
             </v-list-item-content>
           </template>
           <v-list-item
@@ -105,7 +105,7 @@ export default {
           menusDbData.push(JSON.stringify(doc.data()));
         });
         _this.menus = [];
-        _this.menus = _this.menusGroupBy(menusDbData);
+        _this.menus = _this.groupBy("category", menusDbData);
       });
       console.log("getMenusDb end");
     },
@@ -166,7 +166,7 @@ export default {
         let newOrderRef = this.db.collection("orders").doc();
 
         newOrderRef.set({
-          table: this.tableNum,
+          table: this.group,
           id: newOrderRef.id,
           name: menu.name,
           count: menu.count,
@@ -182,11 +182,11 @@ export default {
     reverseSelectedMenus() {
       return this.SelectedMenus.slice().reverse();
     },
-    storeNum: function() {
-      return this.$route.query.store;
+    category: function() {
+      return this.$route.query.category;
     },
-    tableNum: function() {
-      return this.$route.query.table;
+    group: function() {
+      return this.$route.query.group;
     }
   }
 };

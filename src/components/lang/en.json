@@ -5,5 +5,20 @@
   "Count": "Count",
   "Timestamp": "Timestamp",
   "Check": "Check",
-  "Continue": "Continue"
+  "Continue": "Continue",
+  "OrderHistory": "Order history",
+  "PrintPage": "Print page",
+  "OrderPage": "Order page",
+  "Maintenance": "Maintenance",
+  "Menu": "Menu",
+  "Table": "Table",
+  "Name": "Name",
+  "TimestampOfOrder": "Timestamp of order",
+  "Actions": "Actions",
+  "NewItem": "New item",
+  "EditItem": "Edit item",
+  "Cancel": "Cancel",
+  "Save": "Save",
+  "RowsPerPage": "Rows per page",
+  "of": "of"
 }

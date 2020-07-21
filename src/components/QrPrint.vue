@@ -1,23 +1,22 @@
 <template>
   <div class="qrPrint">
     <span class="span-category">{{$t("Category")}}</span>
-    <vue-qrcode class="qr-img" :value="qrUrlText" :options="option" tag="img"></vue-qrcode>
     <span class="span-group">{{$t("Group")}}</span>
+    <vue-qrcode class="qr-img" :value="qrUrlText" :options="option" tag="img"></vue-qrcode>
   </div>
 </template>
 
 <script>
 import VueQrcode from "@chenfengyuan/vue-qrcode";
-import utilsMixin from '../utils'
+import utilsMixin from "../utils";
 
 export default {
-  name: 'qrPrint',
+  name: "qrPrint",
   mixins: [utilsMixin],
   components: {
     VueQrcode
   },
-  methods: {
-  },
+  methods: {},
   data() {
     return {
       option: {
@@ -31,27 +30,27 @@ export default {
           light: "#FFFFFFFF"
         }
       }
-    }
+    };
   },
   computed: {
-    storeNum: function() {
-      return this.$route.query.store;
+    category: function() {
+      return this.$route.query.category;
     },
-    tableNum: function() {
-      return this.$route.query.table;
+    group: function() {
+      return this.$route.query.group;
     },
     qrUrlText: function() {
       let routerLink = this.$router.resolve({
-          name: 'order',
-          query: {
-            store: this.storeNum,
-            table: this.tableNum
-          }
+        name: "order",
+        query: {
+          category: this.category,
+          group: this.group
+        }
       }).href;
       return location.origin + routerLink;
     }
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

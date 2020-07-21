@@ -1,12 +1,12 @@
 <template>
   <v-app>
-    <router-view/>
+    <router-view />
     <CommonFooter />
   </v-app>
 </template>
 
 <script>
-import CommonFooter from './components/CommonFooter.vue'
+import CommonFooter from "./components/CommonFooter.vue";
 
 export default {
   name: "app",
@@ -20,13 +20,13 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 * {
-  font-family: 'Hiragino Kaku Gothic Pro','ヒラギノ角ゴ Pro W3','メイリオ',Meiryo,'ＭＳ Ｐゴシック',sans-serif;
+  font-family: "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", "メイリオ",
+    Meiryo, "ＭＳ Ｐゴシック", sans-serif;
   touch-action: manipulation;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   outline: none;
-  font-size: 20px
 }
 
 html,
@@ -66,5 +66,4 @@ div.background {
   top: 3px;
   left: 3px;
 }
-
 </style>
