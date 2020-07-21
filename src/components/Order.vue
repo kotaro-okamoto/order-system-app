@@ -1,60 +1,34 @@
 <template>
   <div class="menu-drawer">
     <input type="checkbox" id="chk" v-model="isDrawerShow" />
-    
-      <v-expansion-panels accordion>
-        <v-expansion-panel v-for="menu of this.menus" :key="menu.index">
-          <v-expansion-panel-header>
-            {{menu.groupByValue}}
-          </v-expansion-panel-header>
-          <v-expansion-panel-content
-            v-for="product of menu.products"
-            :key="product.id"
-            @click="select(product.id,product.name)"
-          >
-            <v-card height="44px" @click="select(product.id,product.name)" flat>
-              {{product.name}}
-            </v-card>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
+    <div>
+    <v-tabs
+      v-model="tab"
+      background-color="primary"
+      dark
+      center-active
+      centered
+      grow
+    >
+      <v-tab
+        v-for="menu of this.menus" :key="menu.index"
+      >
+        {{menu.groupByValue}}
+      </v-tab>
+    </v-tabs>
+    <v-tabs-items v-model="tab">
+      <v-tab-item
+        v-for=" menu of this.menus"
+            :key="menu.index"
+      >
+        <v-card flat v-for="product of menu.products" :key="product.id" @click="select(product.id,product.name)">
+          <v-card-text>{{product.name}}</v-card-text>
+        </v-card>
+      </v-tab-item>
+    </v-tabs-items>
+    </div>
     <v-btn rounded color="primary" dark @click="
 switchDrawerShow()" class="mt-5">{{$t("Check")}}</v-btn>
-<div>
-<v-btn
-                  rounded
-                  color="primary"
-                  dark
-                  :to="{name: 'order1', 
-                    query: {
-                    category: this.category,
-                    group: this.group
-                  }}"
-                  target="_blank"
-                >パターン2</v-btn>
-                <v-btn
-                  rounded
-                  color="primary"
-                  dark
-                  :to="{name: 'order2', 
-                    query: {
-                    category: this.category,
-                    group: this.group
-                  }}"
-                  target="_blank"
-                >パターン3</v-btn>
-                <v-btn
-                  rounded
-                  color="primary"
-                  dark
-                  :to="{name: 'order3', 
-                    query: {
-                    category: this.category,
-                    group: this.group
-                  }}"
-                  target="_blank"
-                >パターン4</v-btn>
-                </div>
     <label class="other" for="chk"></label>
     <div class="content">
       <div class="drawer-header">
@@ -114,6 +88,7 @@ export default {
   data: function() {
     return {
       db: "",
+      tab: "",
       menus: [],
       SelectedMenus: [],
       isDrawerShow: false,
