@@ -27,6 +27,7 @@ export default {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   outline: none;
+  font-size: 18px;
 }
 
 html,

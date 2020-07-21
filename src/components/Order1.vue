@@ -1,60 +1,27 @@
 <template>
   <div class="menu-drawer">
     <input type="checkbox" id="chk" v-model="isDrawerShow" />
-    
-      <v-expansion-panels accordion>
-        <v-expansion-panel v-for="menu of this.menus" :key="menu.index">
-          <v-expansion-panel-header>
-            {{menu.groupByValue}}
-          </v-expansion-panel-header>
-          <v-expansion-panel-content
+    <div>
+      <v-list>
+        <v-list-group no-action sub-group v-for="menu of this.menus" :key="menu.index">
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title v-text="menu.groupByValue">sublistlabel</v-list-item-title>
+            </v-list-item-content>
+          </template>
+          <v-list-item
+            link
             v-for="product of menu.products"
             :key="product.id"
             @click="select(product.id,product.name)"
           >
-            <v-card height="44px" @click="select(product.id,product.name)" flat>
-              {{product.name}}
-            </v-card>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
+            <v-list-item-title v-text="product.name"></v-list-item-title>
+          </v-list-item>
+        </v-list-group>
+      </v-list>
+    </div>
     <v-btn rounded color="primary" dark @click="
-switchDrawerShow()" class="mt-5">{{$t("Check")}}</v-btn>
-<div>
-<v-btn
-                  rounded
-                  color="primary"
-                  dark
-                  :to="{name: 'order1', 
-                    query: {
-                    category: this.category,
-                    group: this.group
-                  }}"
-                  target="_blank"
-                >パターン2</v-btn>
-                <v-btn
-                  rounded
-                  color="primary"
-                  dark
-                  :to="{name: 'order2', 
-                    query: {
-                    category: this.category,
-                    group: this.group
-                  }}"
-                  target="_blank"
-                >パターン3</v-btn>
-                <v-btn
-                  rounded
-                  color="primary"
-                  dark
-                  :to="{name: 'order3', 
-                    query: {
-                    category: this.category,
-                    group: this.group
-                  }}"
-                  target="_blank"
-                >パターン4</v-btn>
-                </div>
+switchDrawerShow()">{{$t("Check")}}</v-btn>
     <label class="other" for="chk"></label>
     <div class="content">
       <div class="drawer-header">
@@ -224,12 +191,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-.v-expansion-panel-content{
-  margin:0;
-  padding:0;
-}
-
 [v-cloak] {
   display: none;
 }

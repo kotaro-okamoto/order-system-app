@@ -1,23 +1,36 @@
 <template>
   <div class="menu-drawer">
     <input type="checkbox" id="chk" v-model="isDrawerShow" />
-    
-      <v-expansion-panels accordion>
-        <v-expansion-panel v-for="menu of this.menus" :key="menu.index">
+    <div>
+      <v-container>
+        <v-row >
+          <v-col cols=6 v-for="menu of this.menus" :key="menu.index">
+            
+      <v-expansion-panels accordion flat>
+        <v-expansion-panel>
           <v-expansion-panel-header>
-            {{menu.groupByValue}}
+            <template v-slot:actions>
+              <v-card height="200px" width="150px">
+                {{menu.groupByValue}}
+              </v-card>
+            </template>
           </v-expansion-panel-header>
           <v-expansion-panel-content
             v-for="product of menu.products"
             :key="product.id"
             @click="select(product.id,product.name)"
           >
-            <v-card height="44px" @click="select(product.id,product.name)" flat>
-              {{product.name}}
-            </v-card>
+             <v-card height="44px" @click="select(product.id,  product.name)" flat>
+                {{product.name}}
+              </v-card>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
+      </v-col>
+        </v-row>
+          
+    </v-container>
+    </div>
     <v-btn rounded color="primary" dark @click="
 switchDrawerShow()" class="mt-5">{{$t("Check")}}</v-btn>
 <div>
@@ -32,28 +45,6 @@ switchDrawerShow()" class="mt-5">{{$t("Check")}}</v-btn>
                   }}"
                   target="_blank"
                 >パターン2</v-btn>
-                <v-btn
-                  rounded
-                  color="primary"
-                  dark
-                  :to="{name: 'order2', 
-                    query: {
-                    category: this.category,
-                    group: this.group
-                  }}"
-                  target="_blank"
-                >パターン3</v-btn>
-                <v-btn
-                  rounded
-                  color="primary"
-                  dark
-                  :to="{name: 'order3', 
-                    query: {
-                    category: this.category,
-                    group: this.group
-                  }}"
-                  target="_blank"
-                >パターン4</v-btn>
                 </div>
     <label class="other" for="chk"></label>
     <div class="content">

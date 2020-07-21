@@ -39,7 +39,7 @@
           <v-container fill-height width="40px" class="pa-0">
             <v-row class="pa-0 mx-2">
               <v-col cols="1" class="pa-0 text-truncate" align="center">
-                <v-btn color="secondary" fab x-small icon depressed @click="deleteItem(order.id)">
+                <v-btn color="secondary" fab small icon depressed @click="deleteItem(order.id)">
                   <v-icon>✖</v-icon>
                 </v-btn>
               </v-col>
