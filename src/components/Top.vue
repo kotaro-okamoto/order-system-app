@@ -1,5 +1,6 @@
 <template>
   <div class="top">
+    <v-app-bar app color="#F52900" dense height="3px" flat></v-app-bar>
     <div>
       <v-card class="pa-0 my-2 mx-10">
         <v-card-title class="pa-0 ma-0">
@@ -13,13 +14,7 @@
           <v-container>
             <v-row justify="center">
               <v-col cols="12" sm="6" md="4" class="pa-0 ma-0">
-                <v-btn
-                  rounded
-                  color="primary"
-                  dark
-                  to="/orderSheet"
-                  target="_blank"
-                >{{$t("OrderHistory")}}</v-btn>
+                <v-btn color="#F52900" dark to="/orderSheet" target="_blank">{{$t("OrderHistory")}}</v-btn>
               </v-col>
             </v-row>
           </v-container>
@@ -46,7 +41,6 @@
                   item-value="name"
                   label="category"
                   return-object
-                  class="text-subtitle-1"
                   @change="setSelectedGroup()"
                 />
               </v-col>
@@ -72,8 +66,7 @@
             <v-row justify="center">
               <v-col cols="12" xs="12" sm="6" md="6" lg="6" xl="6" class="pa-0 mx-0 my-3">
                 <v-btn
-                  rounded
-                  color="primary"
+                  color="#F52900"
                   dark
                   :to="{name: 'qrPrint', 
                     query: {
@@ -85,8 +78,7 @@
               </v-col>
               <v-col cols="12" xs="12" sm="6" md="6" lg="6" xl="6" class="pa-0 mx-0 my-3">
                 <v-btn
-                  rounded
-                  color="primary"
+                  color="#F52900"
                   dark
                   target="_blank"
                   :to="{name: 'order', 
@@ -116,8 +108,7 @@
             <v-row justify="center">
               <v-col cols="12" xs="12" sm="4" md="4" lg="4" xl="4" class="pa-0 my-2 mx-0">
                 <v-btn
-                  rounded
-                  color="primary"
+                  color="#F52900"
                   dark
                   :to="{name: 'CategoryMaintenance'}"
                   target="_blank"
@@ -125,8 +116,7 @@
               </v-col>
               <v-col cols="12" xs="12" sm="4" md="4" lg="4" xl="4" class="pa-0 my-2 mx-0">
                 <v-btn
-                  rounded
-                  color="primary"
+                  color="#F52900"
                   dark
                   :to="{name: 'GroupMaintenance'}"
                   target="_blank"
@@ -134,8 +124,7 @@
               </v-col>
               <v-col cols="12" xs="12" sm="4" md="4" lg="4" xl="4" class="pa-0 my-2 mx-0">
                 <v-btn
-                  rounded
-                  color="primary"
+                  color="#F52900"
                   dark
                   :to="{name: 'MenuMaintenance'}"
                   target="_blank"
@@ -146,6 +135,9 @@
         </v-card-actions>
       </v-card>
     </div>
+    <v-footer app padless height="44px">
+      <CommonFooter />
+    </v-footer>
   </div>
 </template>
 
@@ -153,9 +145,13 @@
 import firebase from "firebase";
 import "firebase/firestore";
 import utilsMixin from "../utils";
+import CommonFooter from "./CommonFooter.vue";
 
 export default {
   name: "Top",
+  components: {
+    CommonFooter
+  },
   mixins: [utilsMixin],
   data() {
     return {
@@ -212,14 +208,17 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
+<style>
+.top .v-select__selections {
+  line-height: 30px;
+}
+</style>
+
 <style scoped>
 .top {
   text-align: center;
   height: 100%;
   width: 100%;
 }
-
-.v-select {
-  font-size: 19px;
-}
 </style>
+

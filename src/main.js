@@ -3,7 +3,6 @@ import App from './App.vue'
 import router from './router'
 import i18n from './i18n'
 import vuetify from '@/plugins/vuetify'
-import Toasted from './vue-toasted';
 
 Vue.config.productionTip = false
 
@@ -27,7 +26,6 @@ new Vue({
   router,
   i18n,
   vuetify,
-  Toasted,
   render: h => h(App)
 }).$mount('#app')
 

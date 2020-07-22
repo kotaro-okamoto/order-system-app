@@ -1,56 +1,73 @@
 <template>
   <div class="menu-drawer">
+    <v-app-bar app color="#F52900" dense height="3px" flat></v-app-bar>
     <input type="checkbox" id="chk" v-model="isDrawerShow" />
-    <div>
-    <v-tabs
-      v-model="tab"
-      background-color="primary"
-      dark
-      center-active
-      centered
-      grow
+    <v-snackbar
+      v-model="completeSnackShow"
+      :timeout="timeout"
+      color="#00BFBF"
+      transition="scroll-y-reverse-transition"
+      multiLine
     >
-      <v-tab
-        v-for="menu of this.menus" :key="menu.index"
+      <v-row justify="center">
+        <v-col cols="12" align="center" class="pl-8 ma-0">{{$t("OrderComplete")}}</v-col>
+      </v-row>
+    </v-snackbar>
+    <div>
+      <v-tabs
+        center-active
+        centered
+        grow
+        v-model="tab"
+        background-color="#F52900"
+        dark
+        icons-and-text
       >
-        {{menu.groupByValue}}
-      </v-tab>
-    </v-tabs>
-    <v-tabs-items v-model="tab">
-      <v-tab-item
-        v-for=" menu of this.menus"
-            :key="menu.index"
-      >
-        <v-card flat v-for="product of menu.products" :key="product.id" @click="select(product.id,product.name)">
-          <v-card-text>{{product.name}}</v-card-text>
-        </v-card>
-      </v-tab-item>
-    </v-tabs-items>
+        <v-tab v-for="menu of this.menus" :key="menu.index" class="text-h5">{{menu.groupByValue}}</v-tab>
+      </v-tabs>
+      <v-tabs-items v-model="tab">
+        <v-tab-item v-for=" menu of this.menus" :key="menu.index">
+          <v-card
+            flat
+            v-for="product of menu.products"
+            :key="product.id"
+            @click="select(product.id,product.name)"
+          >
+            <v-card-text class="text-h5 black--text">{{product.name}}</v-card-text>
+          </v-card>
+        </v-tab-item>
+      </v-tabs-items>
     </div>
-    <v-btn rounded color="primary" dark @click="
+    <v-btn color="#F52900" dark @click="
 switchDrawerShow()" class="mt-5">{{$t("Check")}}</v-btn>
     <label class="other" for="chk"></label>
     <div class="content">
       <div class="drawer-header">
         <div class="div-drawer-continue-btn">
           <v-btn
-            rounded
-            color="primary"
+            color="#00BF4C"
             dark
             @click="
 deleteZeroItem(); switchDrawerShow()"
           >{{$t("Continue")}}</v-btn>
         </div>
         <div class="div-drawer-send-btn">
-          <v-btn rounded color="primary" dark @click="
+          <v-btn color="#F52900" dark @click="
 sendOrder">{{$t("Order")}}</v-btn>
         </div>
       </div>
       <div class="menu">
+        <v-snackbar v-model="touchingSnackShow" :timeout="0" dark top>{{touchingText}}</v-snackbar>
         <div class="menu-selected" v-for="menu of reverseSelectedMenus" v-bind:key="menu.id">
           <div class="menu-selected-child1">
             <button class="btn-delete" @click="deleteSelectItem(menu)">✖</button>
-            <span class="menu-selected-child1-name">{{menu.name}}</span>
+            <span
+              class="menu-selected-child1-name"
+              @mousedown="openText(menu.name)"
+              @mouseup="closeText()"
+              @touchstart="openText(menu.name)"
+              @touchend="closeText()"
+            >{{menu.name}}</span>
             <button
               class="btn-menu minus"
               @click="setSelectedMenusCount(menu.id,menu.name,--menu.count)"
@@ -64,16 +81,9 @@ sendOrder">{{$t("Order")}}</v-btn>
         </div>
       </div>
     </div>
-    <div>
-      <v-dialog v-model="isOrderComplete" width="500">
-        <v-card>
-          <v-card-title class="justify-center">注文が完了しました。</v-card-title>
-          <v-card-actions class="justify-center">
-            <v-btn color="primary" @click="isOrderComplete = !isOrderComplete">OK</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </div>
+    <v-footer app padless height="44px">
+      <CommonFooter />
+    </v-footer>
   </div>
 </template>
 
@@ -82,8 +92,13 @@ import firebase from "firebase";
 import "firebase/firestore";
 import moment from "moment";
 import utilsMixin from "../utils";
+import CommonFooter from "./CommonFooter.vue";
+
 export default {
   name: "order",
+  components: {
+    CommonFooter
+  },
   mixins: [utilsMixin],
   data: function() {
     return {
@@ -94,7 +109,11 @@ export default {
       isDrawerShow: false,
       active: "",
       isOrderComplete: false,
-      mixins: [utilsMixin]
+      mixins: [utilsMixin],
+      completeSnackShow: false,
+      touchingSnackShow: false,
+      touchingText: "",
+      timeout: 4000
     };
   },
   created: function() {
@@ -165,6 +184,10 @@ export default {
       }
     },
     sendOrder: function() {
+      if (this.SelectedMenus.length > 0) {
+        this.completeSnackShow = true;
+      }
+
       this.switchDrawerShow();
       this.deleteZeroItem();
       var orderTime = moment(new Date()).format("HH:mm:ss");
@@ -179,7 +202,14 @@ export default {
         });
       }
       this.SelectedMenus = [];
-      this.isOrderComplete = !this.isOrderComplete;
+    },
+    openText: function(thisText) {
+      this.touchingText = thisText;
+      this.touchingSnackShow = true;
+    },
+    closeText: function() {
+      this.touchingText = "";
+      this.touchingSnackShow = false;
     }
   },
   computed: {
@@ -199,10 +229,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-.v-expansion-panel-content{
-  margin:0;
-  padding:0;
+.v-expansion-panel-content {
+  margin: 0;
+  padding: 0;
 }
 
 [v-cloak] {

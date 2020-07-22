@@ -1,7 +1,9 @@
 <template>
   <div class="qrPrint">
-    <span class="span-category">{{$t("Category")}}</span>
-    <span class="span-group">{{$t("Group")}}</span>
+    <span class="span-category-title">{{$t("Category")}}</span>
+    <span class="span-category-value">{{category}}</span>
+    <span class="span-group-title">{{$t("Group")}}</span>
+    <span class="span-group-value">{{group}}</span>
     <vue-qrcode class="qr-img" :value="qrUrlText" :options="option" tag="img"></vue-qrcode>
   </div>
 </template>
@@ -56,20 +58,32 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .qrPrint {
-  width: 50%;
+  width: 350px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-left: 20px;
+  margin-top: 20px;
 }
 
-.span-category,
-.span-group {
-  height: 30px;
-  line-height: 30px;
+span {
   font-size: 30px;
+}
+
+.span-category-title{
   margin-top: 15px;
-  margin-bottom: 15px;
+}
+
+.span-category-value{
+  margin-top: 10px;
+}
+
+.span-group-title{
+  margin-top: 50px;
+}
+
+.span-group-value{
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 </style>

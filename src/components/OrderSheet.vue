@@ -1,7 +1,8 @@
 <template>
   <div>
-    <div class="pa-0 my-1">
-      <v-card height="44px" color="#C3270D">
+    <v-app-bar app color="#F52900" dense height="3px" flat></v-app-bar>
+    <div class="pa-0 ma-0">
+      <v-card height="44px" color="#F52900">
         <v-container fill-height width="40px" class="pa-0 font-weight-bold white--text">
           <v-row class="pa-0 mx-2">
             <v-col cols="1"></v-col>
@@ -33,18 +34,33 @@
         </v-container>
       </v-card>
     </div>
+    <v-snackbar v-model="touchingSnackShow" :timeout="0" dark top>{{touchingText}}</v-snackbar>
     <transition-group name="slide-fade">
       <div v-for="order of orders" v-bind:key="order.id" class="order-top pa-0 my-1">
         <v-card height="44px" color="#f7f39c">
           <v-container fill-height width="40px" class="pa-0">
             <v-row class="pa-0 mx-2">
-              <v-col cols="1" class="pa-0 text-truncate" align="center">
+              <v-col cols="1" class="pa-0" align="center">
                 <v-btn color="secondary" fab small icon depressed @click="deleteItem(order.id)">
                   <v-icon>✖</v-icon>
                 </v-btn>
               </v-col>
-              <v-col cols="3" class="pa-0 text-truncate" align="center">{{order.data.table}}</v-col>
-              <v-col cols="3" class="pa-0 text-truncate" align="left">{{order.data.name}}</v-col>
+              <v-col cols="3" class="pa-0 text-truncate" align="center">
+                <span
+                  @mousedown="openText(order.data.table)"
+                  @mouseup="closeText()"
+                  @touchstart="openText(order.data.table)"
+                  @touchend="closeText()"
+                >{{order.data.table}}</span>
+              </v-col>
+              <v-col cols="3" class="pa-0 text-truncate" align="left">
+                <span
+                  @mousedown="openText(order.data.name)"
+                  @mouseup="closeText()"
+                  @touchstart="openText(order.data.name)"
+                  @touchend="closeText()"
+                >{{order.data.name}}</span>
+              </v-col>
               <v-col cols="1" class="pa-0 text-truncate" align="center">{{order.data.count}}</v-col>
               <v-col cols="4" class="pa-0 text-truncate" align="center">{{order.data.time}}</v-col>
             </v-row>
@@ -52,6 +68,9 @@
         </v-card>
       </div>
     </transition-group>
+    <v-footer app padless height="44px">
+      <CommonFooter />
+    </v-footer>
   </div>
 </template>
 
@@ -59,9 +78,13 @@
 import firebase from "firebase";
 import "firebase/firestore";
 import utilsMixin from "../utils";
+import CommonFooter from "./CommonFooter.vue";
 
 export default {
   name: "orderSheet",
+  components: {
+    CommonFooter
+  },
   mixins: [utilsMixin],
   data: function() {
     return {
@@ -84,7 +107,9 @@ export default {
         time: false,
         name: false,
         count: true
-      }
+      },
+      touchingSnackShow: false,
+      touchingText: ""
     };
   },
   methods: {
@@ -133,6 +158,14 @@ export default {
           ? ascOrDescNum
           : 0;
       });
+    },
+    openText: function(thisText) {
+      this.touchingText = thisText;
+      this.touchingSnackShow = true;
+    },
+    closeText: function() {
+      this.touchingText = "";
+      this.touchingSnackShow = false;
     }
   },
   created: function() {

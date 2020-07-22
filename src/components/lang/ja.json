@@ -22,6 +22,6 @@
   "Cancel": "キャンセル",
   "Save": "保存",
   "RowsPerPage": "表示件数",
-  "of": "/"
+  "of": "/",
+  "OrderComplete": "注文が完了しました"
 }
-
