@@ -3,7 +3,7 @@
     <v-app-bar app color="#F52900" dense height="3px" flat></v-app-bar>
     <div>
       <v-card class="pa-0 my-2 mx-10">
-        <v-card-title class="pa-0 ma-0">
+        <v-card-title class="pt-4 pb-0 px-0 ma-0">
           <v-row justify="center">
             <v-col cols="12" sm="6" md="4" class="pa-0 ma-0">
               <span>{{$t("OrderManage")}}</span>
@@ -14,7 +14,15 @@
           <v-container>
             <v-row justify="center">
               <v-col cols="12" sm="6" md="4" class="pa-0 ma-0">
-                <v-btn color="#F52900" dark to="/orderSheet" target="_blank">{{$t("OrderHistory")}}</v-btn>
+                <v-btn
+                  height="60px"
+                  width="16rem"
+                  color="#F52900"
+                  rounded
+                  dark
+                  to="/orderSheet"
+                  target="_blank"
+                >{{$t("OrderHistory")}}</v-btn>
               </v-col>
             </v-row>
           </v-container>
@@ -23,7 +31,7 @@
     </div>
     <div>
       <v-card class="pa-0 my-2 mx-10">
-        <v-card-title class="pa-0 ma-0">
+        <v-card-title class="pt-4 pb-0 px-0 ma-0">
           <v-row justify="center">
             <v-col cols="12" sm="6" md="4" class="pa-0 ma-0">
               <span>{{$t("CreateForUser")}}</span>
@@ -66,7 +74,10 @@
             <v-row justify="center">
               <v-col cols="12" xs="12" sm="6" md="6" lg="6" xl="6" class="pa-0 mx-0 my-3">
                 <v-btn
+                  height="60px"
+                  width="16rem"
                   color="#F52900"
+                  rounded
                   dark
                   :to="{name: 'qrPrint', 
                     query: {
@@ -78,7 +89,10 @@
               </v-col>
               <v-col cols="12" xs="12" sm="6" md="6" lg="6" xl="6" class="pa-0 mx-0 my-3">
                 <v-btn
+                  height="60px"
+                  width="16rem"
                   color="#F52900"
+                  rounded
                   dark
                   target="_blank"
                   :to="{name: 'order', 
@@ -86,7 +100,7 @@
                     category: this.selectedCategory.name,
                     group: this.selectedGroup.groupName
                   }}"
-                >{{$t("OrderPage")}}</v-btn>
+                >{{$t("UserPage")}}</v-btn>
               </v-col>
             </v-row>
           </v-container>
@@ -95,7 +109,7 @@
     </div>
     <div>
       <v-card class="my-2 mx-10">
-        <v-card-title>
+        <v-card-title class="pt-4 pb-0 px-0 ma-0">
           <v-row justify="center">
             <v-col cols="12" sm="6" md="4" class="pa-0 ma-0">
               <span>{{$t("Maintenance")}}</span>
@@ -106,30 +120,40 @@
         <v-card-actions>
           <v-container>
             <v-row justify="center">
-              <v-col cols="12" xs="12" sm="4" md="4" lg="4" xl="4" class="pa-0 my-2 mx-0">
+              <v-col cols="6" xs="6" sm="4" md="4" lg="4" xl="4" class="pa-0 my-2 mx-0">
                 <v-btn
-                  color="#F52900"
+                  height="8rem"
+                  width="8rem"
+                  color="#00CCF5"
+                  rounded
                   dark
                   :to="{name: 'CategoryMaintenance'}"
                   target="_blank"
                 >{{$t("Category")}}</v-btn>
               </v-col>
-              <v-col cols="12" xs="12" sm="4" md="4" lg="4" xl="4" class="pa-0 my-2 mx-0">
+              <v-col cols="6" xs="6" sm="4" md="4" lg="4" xl="4" class="pa-0 my-2 mx-0">
                 <v-btn
-                  color="#F52900"
+                  height="8rem"
+                  width="8rem"
+                  color="#00CCF5"
+                  rounded
                   dark
                   :to="{name: 'GroupMaintenance'}"
                   target="_blank"
                 >{{$t("Group")}}</v-btn>
               </v-col>
-              <v-col cols="12" xs="12" sm="4" md="4" lg="4" xl="4" class="pa-0 my-2 mx-0">
+              <v-col cols="6" xs="6" sm="4" md="4" lg="4" xl="4" class="pa-0 my-2 mx-0">
                 <v-btn
-                  color="#F52900"
+                  height="8rem"
+                  width="8rem"
+                  color="#00CCF5"
+                  rounded
                   dark
                   :to="{name: 'MenuMaintenance'}"
                   target="_blank"
                 >{{$t("Menu")}}</v-btn>
               </v-col>
+              <v-col cols="6" xs="6" sm="4" md="4" lg="4" xl="4" class="pa-0 my-2 mx-0"></v-col>
             </v-row>
           </v-container>
         </v-card-actions>

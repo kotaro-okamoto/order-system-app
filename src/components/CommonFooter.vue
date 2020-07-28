@@ -1,12 +1,12 @@
 <template>
   <v-card flat tile width="100%" class="text-center" color="#F52900" dark>
     <v-card-text class="ma-0 pa-0">
-      <v-container class="ma-0 pa-0">
+      <v-container class="ma-0 pa-0" fluid>
         <v-row>
-          <v-col col="6">
+          <v-col cols="6">
             <label class="label-ja" @click="changeLocale('ja')">日本語</label>
           </v-col>
-          <v-col col="6">
+          <v-col cols="6">
             <label class="label-en" @click="changeLocale('en')">English</label>
           </v-col>
         </v-row>

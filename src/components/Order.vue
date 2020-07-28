@@ -38,22 +38,30 @@
         </v-tab-item>
       </v-tabs-items>
     </div>
-    <v-btn color="#F52900" dark @click="
-switchDrawerShow()" class="mt-5">{{$t("Check")}}</v-btn>
     <label class="other" for="chk"></label>
     <div class="content">
       <div class="drawer-header">
         <div class="div-drawer-continue-btn">
           <v-btn
             color="#00BF4C"
+            height="50px"
+            width="8rem"
+            rounded
             dark
             @click="
 deleteZeroItem(); switchDrawerShow()"
           >{{$t("Continue")}}</v-btn>
         </div>
         <div class="div-drawer-send-btn">
-          <v-btn color="#F52900" dark @click="
-sendOrder">{{$t("Order")}}</v-btn>
+          <v-btn
+            color="#F52900"
+            height="50px"
+            width="8rem"
+            rounded
+            dark
+            @click="
+sendOrder"
+          >{{$t("Order")}}</v-btn>
         </div>
       </div>
       <div class="menu">
@@ -81,7 +89,22 @@ sendOrder">{{$t("Order")}}</v-btn>
         </div>
       </div>
     </div>
-    <v-footer app padless height="44px">
+    <v-footer app padless min-height="44px" color="white">
+      <v-container fluid class="ma-0 pa-0" v-if="!isSelectedMenusEmpty">
+        <v-row>
+          <v-col cols="12" class="my-2 mx-0 pa-0">
+            <v-btn
+              height="60px"
+              width="16rem"
+              color="#00BF4C"
+              rounded
+              dark
+              @click="switchDrawerShow()"
+              class="ma-0 pa-0"
+            >{{$t("Check")}}</v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
       <CommonFooter />
     </v-footer>
   </div>
@@ -109,6 +132,7 @@ export default {
       isDrawerShow: false,
       active: "",
       isOrderComplete: false,
+      isSelectedMenusEmpty: true,
       mixins: [utilsMixin],
       completeSnackShow: false,
       touchingSnackShow: false,
@@ -222,6 +246,15 @@ export default {
     },
     group: function() {
       return this.$route.query.group;
+    }
+  },
+  watch: {
+    SelectedMenus: function() {
+      if (this.SelectedMenus.length > 0) {
+        this.isSelectedMenusEmpty = false;
+      } else {
+        this.isSelectedMenusEmpty = true;
+      }
     }
   }
 };
