@@ -1,5 +1,5 @@
 <template>
-  <v-card flat tile width="100%" class="text-center" color="#F52900" dark>
+  <v-card flat tile width="100%" class="text-center" color="black" dark>
     <v-card-text class="ma-0 pa-0">
       <v-container class="ma-0 pa-0" fluid>
         <v-row>

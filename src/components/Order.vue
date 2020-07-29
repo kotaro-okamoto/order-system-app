@@ -90,18 +90,21 @@ sendOrder"
       </div>
     </div>
     <v-footer app padless min-height="44px" color="white">
-      <v-container fluid class="ma-0 pa-0" v-if="!isSelectedMenusEmpty">
+      <v-container fluid class="ma-0 pa-0">
         <v-row>
           <v-col cols="12" class="my-2 mx-0 pa-0">
-            <v-btn
-              height="60px"
-              width="16rem"
-              color="#00BF4C"
-              rounded
-              dark
-              @click="switchDrawerShow()"
-              class="ma-0 pa-0"
-            >{{$t("Check")}}</v-btn>
+            <transition name="fav" mode="out-in">
+              <v-btn
+                height="60px"
+                width="16rem"
+                color="#00BF4C"
+                rounded
+                dark
+                @click="switchDrawerShow()"
+                class="ma-0 pa-0"
+                v-show="!isSelectedMenusEmpty"
+              >{{$t("Check")}}</v-btn>
+            </transition>
           </v-col>
         </v-row>
       </v-container>
@@ -262,6 +265,16 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.fav-enter-active,
+.fav-leave-active {
+  transition: all 0.1s ease;
+}
+.fav-enter,
+.fav-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
 .v-expansion-panel-content {
   margin: 0;
   padding: 0;

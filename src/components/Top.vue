@@ -74,11 +74,11 @@
             <v-row justify="center">
               <v-col cols="12" xs="12" sm="6" md="6" lg="6" xl="6" class="pa-0 mx-0 my-3">
                 <v-btn
+                v-bind:disabled="isDisabled"
                   height="60px"
                   width="16rem"
                   color="#F52900"
                   rounded
-                  dark
                   :to="{name: 'qrPrint', 
                     query: {
                     category: this.selectedCategory.name,
@@ -89,11 +89,11 @@
               </v-col>
               <v-col cols="12" xs="12" sm="6" md="6" lg="6" xl="6" class="pa-0 mx-0 my-3">
                 <v-btn
+                  v-bind:disabled="isDisabled"
                   height="60px"
                   width="16rem"
                   color="#F52900"
                   rounded
-                  dark
                   target="_blank"
                   :to="{name: 'order', 
                     query: {
@@ -179,12 +179,25 @@ export default {
   mixins: [utilsMixin],
   data() {
     return {
+      isDisabled: true,
       selectedCategory: "",
       selectedGroupList: [],
       selectedGroup: "",
       groupedGroupList: [],
       category: []
     };
+  },
+  watch: {
+    selectedCategory: function(){
+      this.selectedGroup=""
+    },
+    selectedGroup: function() {
+      if (!this.selectedCategory || !this.selectedGroup) {
+        this.isDisabled = true;
+      }else{
+        this.isDisabled = false;
+      }
+    }
   },
   created() {
     this.getCategoryDb();
@@ -233,8 +246,17 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+.top .v-btn__content {
+  color: white;
+}
+
 .top .v-select__selections {
+  height: 50px;
   line-height: 30px;
+}
+
+.top .v-label {
+  font-size: 18px;
 }
 </style>
 
