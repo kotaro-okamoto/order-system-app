@@ -14,6 +14,7 @@
         <v-tab v-for="menu of menus" :key="menu.index" class="text-h5" fixed>{{menu.groupByValue}}</v-tab>
       </v-tabs>
     </v-app-bar>
+    <v-snackbar v-model="touchingSnackShow" :timeout="10000" dark top>{{touchingText}}</v-snackbar>
     <v-snackbar
       v-model="completeSnackShow"
       :timeout="timeout"
