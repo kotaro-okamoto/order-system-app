@@ -1,7 +1,19 @@
 <template>
-  <div class="menu-drawer">
-    <v-app-bar app color="#F52900" dense height="3px" flat></v-app-bar>
-    <input type="checkbox" id="chk" v-model="isDrawerShow" />
+  <div class="order">
+    <v-app-bar app fixed color="#F52900" dense height="55px" flat>
+      <v-app-bar-nav-icon dark @click="switchDrawerShow()"></v-app-bar-nav-icon>
+      <v-tabs
+        center-active
+        centered
+        v-model="tab"
+        background-color="#F52900"
+        dark
+        grow
+        icons-and-text
+      >
+        <v-tab v-for="menu of menus" :key="menu.index" class="text-h5" fixed>{{menu.groupByValue}}</v-tab>
+      </v-tabs>
+    </v-app-bar>
     <v-snackbar
       v-model="completeSnackShow"
       :timeout="timeout"
@@ -14,19 +26,8 @@
       </v-row>
     </v-snackbar>
     <div>
-      <v-tabs
-        center-active
-        centered
-        grow
-        v-model="tab"
-        background-color="#F52900"
-        dark
-        icons-and-text
-      >
-        <v-tab v-for="menu of this.menus" :key="menu.index" class="text-h5">{{menu.groupByValue}}</v-tab>
-      </v-tabs>
       <v-tabs-items v-model="tab">
-        <v-tab-item v-for=" menu of this.menus" :key="menu.index">
+        <v-tab-item v-for=" menu of menus" :key="menu.index">
           <v-card
             flat
             v-for="product of menu.products"
@@ -38,78 +39,86 @@
         </v-tab-item>
       </v-tabs-items>
     </div>
-    <label class="other" for="chk"></label>
-    <div class="content">
-      <div class="drawer-header">
-        <div class="div-drawer-continue-btn">
-          <v-btn
-            color="#00BF4C"
-            height="50px"
-            width="8rem"
-            rounded
-            dark
-            @click="
-deleteZeroItem(); switchDrawerShow()"
-          >{{$t("Continue")}}</v-btn>
-        </div>
-        <div class="div-drawer-send-btn">
-          <v-btn
-            color="#F52900"
-            height="50px"
-            width="8rem"
-            rounded
-            dark
-            @click="
-sendOrder"
-          >{{$t("Order")}}</v-btn>
-        </div>
-      </div>
-      <div class="menu">
-        <v-snackbar v-model="touchingSnackShow" :timeout="0" dark top>{{touchingText}}</v-snackbar>
-        <div class="menu-selected" v-for="menu of reverseSelectedMenus" v-bind:key="menu.id">
-          <div class="menu-selected-child1">
-            <button class="btn-delete" @click="deleteSelectItem(menu)">✖</button>
-            <span
-              class="menu-selected-child1-name"
-              @mousedown="openText(menu.name)"
-              @mouseup="closeText()"
-              @touchstart="openText(menu.name)"
-              @touchend="closeText()"
-            >{{menu.name}}</span>
-            <button
-              class="btn-menu minus"
-              @click="setSelectedMenusCount(menu.id,menu.name,--menu.count)"
-            >－</button>
-            <span class="menu-selected-child1-count">{{menu.count}}</span>
-            <button
-              class="btn-menu plus"
-              @click="setSelectedMenusCount(menu.id,menu.name,++menu.count)"
-            >＋</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <v-footer app padless min-height="44px" color="white">
-      <v-container fluid class="ma-0 pa-0">
-        <v-row>
-          <v-col cols="12" class="my-2 mx-0 pa-0">
-            <transition name="fav" mode="out-in">
-              <v-btn
-                height="60px"
-                width="16rem"
-                color="#00BF4C"
-                rounded
-                dark
-                @click="switchDrawerShow()"
-                class="ma-0 pa-0"
-                v-show="!isSelectedMenusEmpty"
-              >{{$t("Check")}}</v-btn>
-            </transition>
-          </v-col>
-        </v-row>
-      </v-container>
-      <CommonFooter />
-    </v-footer>
+    <v-navigation-drawer app v-model="isDrawerShow" temporary right>
+      <v-list class="ma-0 pa-0">
+        <v-btn
+          color="#F52900"
+          height="50px"
+          width="14rem"
+          class="my-2 mx-0 pa-0"
+          rounded
+          dark
+          @click="sendOrder"
+        >{{$t("Order")}}</v-btn>
+
+        <v-divider></v-divider>
+
+        <v-list-item
+          v-for="menu of reverseSelectedMenus"
+          v-bind:key="menu.id"
+          class="ma-0 py-0 px-2"
+        >
+          <v-list-item-content class="ma-0 pa-0">
+            <v-list-item-title>
+              <v-container class="ma-0 pa-0">
+                <v-row align="center" class="ma-0 pa-0">
+                  <v-col cols="1" class="ma-0 pa-0">
+                    <v-btn icon small @click="deleteSelectItem(menu)">
+                      <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                  </v-col>
+                  <v-col cols="6" class="mx-3 my-0 pa-0 text-truncate">
+                    <span
+                      class="menu-selected-child1-name"
+                      @mousedown="openText(menu.name)"
+                      @mouseup="closeText()"
+                      @touchstart="openText(menu.name)"
+                      @touchend="closeText()"
+                    >{{menu.name}}</span>
+                  </v-col>
+                  <v-col cols="1" class="ma-0 pa-0">
+                    <v-btn
+                      icon
+                      small
+                      color="#038da8"
+                      @click="setSelectedMenusCount(menu.id,menu.name,--menu.count)"
+                    >
+                      <v-icon>mdi-minus</v-icon>
+                    </v-btn>
+                  </v-col>
+                  <v-col cols="2" class="ma-0 pa-0">{{menu.count}}</v-col>
+                  <v-col cols="1" class="ma-0 pa-0">
+                    <v-btn
+                      icon
+                      small
+                      color="#038da8"
+                      @click="setSelectedMenusCount(menu.id,menu.name,++menu.count)"
+                    >
+                      <v-icon>mdi-plus</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+    <v-fab-transition>
+      <v-btn
+        :key="activeFab.icon"
+        :color="activeFab.color"
+        fab
+        small
+        dark
+        fixed
+        bottom
+        right
+        @click="changeButton()"
+      >
+        <v-icon>{{activeFab.icon}}</v-icon>
+      </v-btn>
+    </v-fab-transition>
   </div>
 </template>
 
@@ -118,18 +127,15 @@ import firebase from "firebase";
 import "firebase/firestore";
 import moment from "moment";
 import utilsMixin from "../utils";
-import CommonFooter from "./CommonFooter.vue";
 
 export default {
   name: "order",
-  components: {
-    CommonFooter
-  },
   mixins: [utilsMixin],
   data: function() {
     return {
       db: "",
       tab: "",
+      buttonPattern: 0,
       menus: [],
       SelectedMenus: [],
       isDrawerShow: false,
@@ -147,6 +153,12 @@ export default {
     this.getMenusDb();
   },
   methods: {
+    changeButton: function() {
+      this.buttonPattern += 1;
+      if (this.buttonPattern > 1) {
+        this.buttonPattern = 0;
+      }
+    },
     getMenusDb: function() {
       console.log("getMenusDb start");
       this.db = firebase.firestore();
@@ -249,6 +261,22 @@ export default {
     },
     group: function() {
       return this.$route.query.group;
+    },
+    activeFab: function() {
+      switch (this.buttonPattern) {
+        case 1:
+          this.changeLocale("en");
+          return {
+            color: "red",
+            icon: "mdi-alphabetical-variant"
+          };
+        default:
+          this.changeLocale("ja");
+          return {
+            color: "success",
+            icon: "mdi-syllabary-hiragana"
+          };
+      }
     }
   },
   watch: {
@@ -265,6 +293,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+nav {
+  width: 350px !important;
+  max-width: 85vw !important;
+}
+
 .fav-enter-active,
 .fav-leave-active {
   transition: all 0.1s ease;
@@ -274,263 +307,7 @@ export default {
   opacity: 0;
   transform: translateY(30px);
 }
-
-.v-expansion-panel-content {
-  margin: 0;
-  padding: 0;
-}
-
-[v-cloak] {
-  display: none;
-}
-.menu-drawer {
+.order {
   text-align: center;
-}
-.menu-drawer .menu-top {
-  height: 80px;
-  border-top: 1px solid gray;
-}
-.menu-drawer .menu-top-label {
-  display: block;
-  height: 100%;
-  line-height: 80px;
-  font-size: 27px;
-  background: #fff;
-  padding: 4px 0;
-  cursor: pointer;
-  text-align: center;
-  right: 0;
-}
-.menu-drawer .other {
-  background: rgba(0, 0, 0, 0.2);
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-}
-.menu-drawer .content {
-  display: table;
-  height: 90%;
-  border: 1px solid #ebebeb;
-  border-radius: 4px;
-  background: #fff;
-  width: 90vw;
-  top: 34px;
-  right: 0;
-  text-align: center;
-}
-.drawer-header {
-  padding-top: 10px;
-  padding-bottom: 10px;
-  display: flex;
-  justify-content: space-around;
-}
-.div-drawer-continue-btn {
-  display: inline-block;
-  width: 40%;
-  margin-right: 10px;
-}
-.div-drawer-send-btn {
-  display: inline-block;
-  width: 40%;
-  margin-left: 10px;
-}
-.btn-continue {
-  height: 20px;
-  width: 90%;
-  background-color: #57ed7f;
-}
-.btn-send {
-  height: 20px;
-  width: 90%;
-  background-color: #ed576a;
-}
-@media screen and (min-width: 415px) {
-  .menu-drawer .content {
-    width: 350px;
-  }
-}
-.menu {
-  height: 75%;
-  width: 100%;
-  margin-top: 10px;
-  text-align: left;
-  overflow-y: auto;
-}
-.menu-selected {
-  font-size: 25px;
-  line-height: 50px;
-  align-items: center;
-  border-top: 1px solid gray;
-}
-.menu-selected-child1 {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-right: 10px;
-  margin-left: 10px;
-}
-.btn-menu {
-  text-decoration: none;
-  font-size: 25px;
-  font-weight: bold;
-  width: 20%;
-  height: 44px;
-  text-align: center;
-  overflow: hidden;
-  color: #038da8;
-  background: none;
-  border: none;
-  margin: 0;
-  padding: 0;
-  flex-grow: 1;
-}
-.btn-delete {
-  text-decoration: none;
-  font-size: 20px;
-  font-weight: bold;
-  width: 10%;
-  height: 44px;
-  border-radius: 10px;
-  text-align: center;
-  overflow: hidden;
-  border: solid 2px rgba(255, 255, 255, 0.47);
-  margin: 0;
-  padding: 0px;
-  background: #ffffff;
-  color: #969696;
-  flex-grow: 1;
-}
-.menu-selected-child1-name {
-  margin-left: 20px;
-  width: 60%;
-  white-space: nowrap;
-  overflow: hidden;
-}
-.menu-selected-child1-count {
-  text-align: center;
-  width: 13%;
-}
-.menu-drawer .content,
-.menu-drawer .other {
-  position: fixed;
-}
-.menu-drawer .btn,
-.menu-drawer .content {
-  z-index: 1001;
-}
-.menu-drawer .other {
-  z-index: 1000;
-}
-.menu-drawer #chk {
-  display: none;
-}
-.menu-drawer #chk ~ .btn::before {
-  display: block;
-}
-.menu-drawer #chk ~ .btn::after {
-  display: none;
-}
-.menu-drawer #chk ~ .other {
-  display: none;
-}
-.menu-drawer #chk:checked ~ .btn::before {
-  display: none;
-}
-.menu-drawer #chk:checked ~ .btn::after {
-  display: block;
-}
-.menu-drawer #chk:checked ~ .other {
-  display: block;
-}
-.menu-drawer #chk ~ .content {
-  transform: translate(350%, 0);
-  transition: transform 0.3s ease-in-out;
-}
-.menu-drawer #chk:checked ~ .content {
-  transform: none;
-}
-@keyframes click-wave {
-  0% {
-    position: relative;
-    width: 30px;
-    height: 30px;
-    opacity: 0.35;
-  }
-  100% {
-    width: 200px;
-    height: 200px;
-    margin-top: -80px;
-    margin-left: -80px;
-    opacity: 0;
-  }
-}
-.menu label {
-  line-height: 40px;
-  display: block;
-  border-top: 1px solid gray;
-}
-.menu .option-input {
-  position: relative;
-  top: 6px;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  width: 30px;
-  height: 30px;
-  margin-right: 0.5rem;
-  cursor: pointer;
-  transition: all 0.15s ease-out 0s;
-  color: #ffffff;
-  border: none;
-  outline: none;
-  background: #d7cbcb;
-  -webkit-appearance: none;
-  appearance: none;
-}
-.menu .option-input:hover {
-  background: #406091;
-}
-.menu .option-input:checked {
-  background: #3c80da;
-}
-.menu .option-input:checked::before {
-  font-size: 20px;
-  line-height: 30px;
-  position: absolute;
-  display: inline-block;
-  width: 30px;
-  height: 30px;
-  content: "✔";
-  text-align: center;
-}
-.menu .option-input:checked::after {
-  position: relative;
-  display: block;
-  content: "";
-  -webkit-animation: click-wave 0.65s;
-  animation: click-wave 0.65s;
-  background: #3c80da;
-}
-.menu .option-input.radio {
-  border-radius: 50%;
-}
-.menu .option-input.radio::after {
-  border-radius: 50%;
-}
-.menu-drawer .content h2 {
-  font-size: 16px;
-  font-weight: 700;
-  color: #fff;
-  background: #383838;
-  margin: 0;
-  padding: 0.7em;
-  border-radius: 4px 4px 0 0;
-}
-.hidden {
-  display: none;
-}
-.order-complete-alert {
-  margin: 0 auto;
 }
 </style>
