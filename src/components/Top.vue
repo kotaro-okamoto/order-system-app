@@ -74,7 +74,7 @@
             <v-row justify="center">
               <v-col cols="12" xs="12" sm="6" md="6" lg="6" xl="6" class="pa-0 mx-0 my-3">
                 <v-btn
-                v-bind:disabled="isDisabled"
+                :disabled="!this.selectedCategory || !this.selectedGroup"
                   height="60px"
                   width="16rem"
                   color="#F52900"
@@ -89,7 +89,7 @@
               </v-col>
               <v-col cols="12" xs="12" sm="6" md="6" lg="6" xl="6" class="pa-0 mx-0 my-3">
                 <v-btn
-                  v-bind:disabled="isDisabled"
+                  :disabled="!this.selectedCategory || !this.selectedGroup"
                   height="60px"
                   width="16rem"
                   color="#F52900"
@@ -179,7 +179,6 @@ export default {
   mixins: [utilsMixin],
   data() {
     return {
-      isDisabled: true,
       selectedCategory: "",
       selectedGroupList: [],
       selectedGroup: "",
@@ -191,13 +190,6 @@ export default {
     selectedCategory: function(){
       this.selectedGroup=""
     },
-    selectedGroup: function() {
-      if (!this.selectedCategory || !this.selectedGroup) {
-        this.isDisabled = true;
-      }else{
-        this.isDisabled = false;
-      }
-    }
   },
   created() {
     this.getCategoryDb();

@@ -5,7 +5,7 @@
       <v-tabs
         center-active
         centered
-        v-model="tab"
+        v-model="menuTab"
         background-color="#F52900"
         dark
         grow
@@ -14,7 +14,7 @@
         <v-tab v-for="menu of menus" :key="menu.index" class="text-h5" fixed>{{menu.groupByValue}}</v-tab>
       </v-tabs>
     </v-app-bar>
-    <v-snackbar v-model="touchingSnackShow" :timeout="10000" dark top>{{touchingText}}</v-snackbar>
+
     <v-snackbar
       v-model="completeSnackShow"
       :timeout="timeout"
@@ -28,7 +28,7 @@
       </v-row>
     </v-snackbar>
     <div>
-      <v-tabs-items app v-model="tab">
+      <v-tabs-items app v-model="menuTab">
         <v-tab-item v-for=" menu of menus" :key="menu.index">
           <v-card
             flat
@@ -42,14 +42,16 @@
       </v-tabs-items>
     </div>
     <v-navigation-drawer app v-model="isDrawerShow" temporary right>
+      <v-snackbar absolute v-model="touchingSnackShow" :timeout="10000" dark top>{{touchingText}}</v-snackbar>
       <v-list class="ma-0 pa-0">
         <v-btn
           color="#F52900"
           height="50px"
           width="14rem"
           class="my-2 mx-0 pa-0"
+          :disabled="this.SelectedMenus.length < 1"
+          id="sendOrderBtn"
           rounded
-          dark
           @click="sendOrder"
         >{{$t("Order")}}</v-btn>
 
@@ -136,15 +138,12 @@ export default {
   data: function() {
     return {
       db: "",
-      tab: "",
+      mixins: [utilsMixin],
+      menuTab: "",
       buttonPattern: 0,
       menus: [],
       SelectedMenus: [],
       isDrawerShow: false,
-      active: "",
-      isOrderComplete: false,
-      isSelectedMenusEmpty: true,
-      mixins: [utilsMixin],
       completeSnackShow: false,
       touchingSnackShow: false,
       touchingText: "",
@@ -280,25 +279,25 @@ export default {
           };
       }
     }
-  },
-  watch: {
-    SelectedMenus: function() {
-      if (this.SelectedMenus.length > 0) {
-        this.isSelectedMenusEmpty = false;
-      } else {
-        this.isSelectedMenusEmpty = true;
-      }
-    }
   }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
+<style>
+.order #sendOrderBtn{
+  color: white;
+}
+
+</style>
+
+
 <style scoped>
 nav {
   width: 350px !important;
   max-width: 85vw !important;
 }
+
 
 .fav-enter-active,
 .fav-leave-active {
