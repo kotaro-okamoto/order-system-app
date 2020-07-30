@@ -19,15 +19,16 @@
       v-model="completeSnackShow"
       :timeout="timeout"
       color="#00BFBF"
+      height="20px"
       transition="scroll-y-reverse-transition"
-      multiLine
+      rounded="pill"
     >
       <v-row justify="center">
-        <v-col cols="12" align="center" class="pl-8 ma-0">{{$t("OrderComplete")}}</v-col>
+        <v-col cols="12" align="center" class="py-0 pl-8 ma-0">{{$t("OrderComplete")}}</v-col>
       </v-row>
     </v-snackbar>
     <div>
-      <v-tabs-items v-model="tab">
+      <v-tabs-items app v-model="tab">
         <v-tab-item v-for=" menu of menus" :key="menu.index">
           <v-card
             flat
