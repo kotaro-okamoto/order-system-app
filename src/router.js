@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Top from './components/Top.vue'
+import UserTop from './components/UserTop.vue'
 import QrPrint from './components/QrPrint.vue'
 import Order from './components/Order.vue'
 import OrderSheet from './components/OrderSheet.vue'
@@ -17,6 +18,11 @@ export default new Router({
       path: '/',
       name: 'top',
       component: Top
+    },
+    {
+      path: '/userTop',
+      name: 'userTop',
+      component: UserTop
     },
     {
       path: '/order',

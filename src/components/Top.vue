@@ -6,65 +6,27 @@
         <v-card-title class="pt-4 pb-0 px-0 ma-0">
           <v-row justify="center">
             <v-col cols="12" sm="6" md="4" class="pa-0 ma-0">
-              <span>{{$t("OrderManage")}}</span>
-            </v-col>
-          </v-row>
-        </v-card-title>
-        <v-card-actions>
-          <v-container>
-            <v-row justify="center">
-              <v-col cols="12" sm="6" md="4" class="pa-0 ma-0">
-                <v-btn
-                  height="60px"
-                  width="16rem"
-                  color="#F52900"
-                  rounded
-                  dark
-                  to="/orderSheet"
-                  target="_blank"
-                >{{$t("OrderHistory")}}</v-btn>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-actions>
-      </v-card>
-    </div>
-    <div>
-      <v-card class="pa-0 my-2 mx-10">
-        <v-card-title class="pt-4 pb-0 px-0 ma-0">
-          <v-row justify="center">
-            <v-col cols="12" sm="6" md="4" class="pa-0 ma-0">
               <span>{{$t("CreateForUser")}}</span>
             </v-col>
           </v-row>
         </v-card-title>
         <v-card-text>
           <v-container>
-            <v-row justify="center">
-              <v-col cols="12" sm="6" md="4" class="pa-0 ma-0">
+            <v-row align="center" justify="center">
+              <v-col cols="10" class="pa-0 ma-0">
                 <v-select
-                  :items="category"
-                  v-model="selectedCategory"
+                  :items="company"
+                  v-model="selectedCompany"
                   item-text="name"
-                  item-value="name"
+                  item-value="id"
                   label="category"
                   return-object
-                  @change="setSelectedGroup()"
                 />
-              </v-col>
-            </v-row>
-          </v-container>
-          <v-container>
-            <v-row justify="center">
-              <v-col cols="12" sm="6" md="4" class="pa-0 ma-0">
-                <v-select
-                  :items="selectedGroupList"
-                  item-text="groupName"
-                  item-value="groupName"
-                  label="group"
-                  v-model="selectedGroup"
-                  return-object
-                ></v-select>
+                </v-col>
+                <v-col cols="2" class="pa-0 ma-0">
+                  <v-icon medium class="mr-2" @click="clickNew">mdi-plus</v-icon>
+                  <v-icon :disabled="!this.selectedCompany.id" medium class="mr-2" @click="clickEdit">mdi-pencil</v-icon>
+                  <v-icon medium :disabled="!this.selectedCompany.id" @click="deleteItem">mdi-delete</v-icon>
               </v-col>
             </v-row>
           </v-container>
@@ -72,92 +34,48 @@
         <v-card-actions>
           <v-container>
             <v-row justify="center">
-              <v-col cols="12" xs="12" sm="6" md="6" lg="6" xl="6" class="pa-0 mx-0 my-3">
+              <v-col cols="12" class="pa-0 mx-0 my-3">
                 <v-btn
-                :disabled="!this.selectedCategory || !this.selectedGroup"
                   height="60px"
                   width="16rem"
                   color="#F52900"
                   rounded
-                  :to="{name: 'qrPrint', 
+                  :disabled="!this.selectedCompany.id" 
+                  :to="{name: 'userTop', 
                     query: {
-                    category: this.selectedCategory.name,
-                    group: this.selectedGroup.groupName
+                    company: this.selectedCompany.id,
                   }}"
                   target="_blank"
-                >{{$t("PrintPage")}}</v-btn>
-              </v-col>
-              <v-col cols="12" xs="12" sm="6" md="6" lg="6" xl="6" class="pa-0 mx-0 my-3">
-                <v-btn
-                  :disabled="!this.selectedCategory || !this.selectedGroup"
-                  height="60px"
-                  width="16rem"
-                  color="#F52900"
-                  rounded
-                  target="_blank"
-                  :to="{name: 'order', 
-                    query: {
-                    category: this.selectedCategory.name,
-                    group: this.selectedGroup.groupName
-                  }}"
-                >{{$t("UserPage")}}</v-btn>
+                >ユーザ管理ページへ</v-btn>
               </v-col>
             </v-row>
           </v-container>
         </v-card-actions>
       </v-card>
-    </div>
-    <div>
-      <v-card class="my-2 mx-10">
-        <v-card-title class="pt-4 pb-0 px-0 ma-0">
-          <v-row justify="center">
-            <v-col cols="12" sm="6" md="4" class="pa-0 ma-0">
-              <span>{{$t("Maintenance")}}</span>
-            </v-col>
-          </v-row>
-        </v-card-title>
-        <v-card-text></v-card-text>
-        <v-card-actions>
-          <v-container>
-            <v-row justify="center">
-              <v-col cols="6" xs="6" sm="4" md="4" lg="4" xl="4" class="pa-0 my-2 mx-0">
-                <v-btn
-                  height="8rem"
-                  width="8rem"
-                  color="#00CCF5"
-                  rounded
-                  dark
-                  :to="{name: 'CategoryMaintenance'}"
-                  target="_blank"
-                >{{$t("Category")}}</v-btn>
-              </v-col>
-              <v-col cols="6" xs="6" sm="4" md="4" lg="4" xl="4" class="pa-0 my-2 mx-0">
-                <v-btn
-                  height="8rem"
-                  width="8rem"
-                  color="#00CCF5"
-                  rounded
-                  dark
-                  :to="{name: 'GroupMaintenance'}"
-                  target="_blank"
-                >{{$t("Group")}}</v-btn>
-              </v-col>
-              <v-col cols="6" xs="6" sm="4" md="4" lg="4" xl="4" class="pa-0 my-2 mx-0">
-                <v-btn
-                  height="8rem"
-                  width="8rem"
-                  color="#00CCF5"
-                  rounded
-                  dark
-                  :to="{name: 'MenuMaintenance'}"
-                  target="_blank"
-                >{{$t("Menu")}}</v-btn>
-              </v-col>
-              <v-col cols="6" xs="6" sm="4" md="4" lg="4" xl="4" class="pa-0 my-2 mx-0"></v-col>
-            </v-row>
-          </v-container>
-        </v-card-actions>
-      </v-card>
+      <v-dialog v-model="dialog" max-width="500px" >
+        <v-card>
+          <v-card-title>
+            <span class="headline">あああ</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container id="container-dialog-category-maintenance" >
+              <v-row>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field 
+                  v-model="selectedCompany.name"
+                  label="Company" 
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="#F52900" text @click="close">{{$t("Cancel")}}</v-btn>
+            <v-btn color="blue darken-1" text @click="save">{{$t("Save")}}</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
     <v-footer app padless height="44px">
       <CommonFooter />
@@ -179,59 +97,77 @@ export default {
   mixins: [utilsMixin],
   data() {
     return {
-      selectedCategory: "",
-      selectedGroupList: [],
-      selectedGroup: "",
-      groupedGroupList: [],
-      category: []
+      selectedCompany: {
+        id: "",
+        name: ""
+      },
+      dialog: false,
+      isNew: true,
+      company: []
     };
   },
-  watch: {
-    selectedCategory: function(){
-      this.selectedGroup=""
-    },
-  },
   created() {
-    this.getCategoryDb();
-    this.getGroupDb();
+    this.getCompanyDb();
   },
   methods: {
-    getCategoryDb: function() {
+    getCompanyDb: function() {
       console.log("getCategoryDb start");
       this.db = firebase.firestore();
+      
       const _this = this;
 
-      this.db.collection("category").onSnapshot(function(querySnapshot) {
+      this.db.collection("company").onSnapshot(function(querySnapshot) {
+        _this.company = []
         querySnapshot.forEach(function(doc) {
-          _this.category.push(doc.data());
+          _this.company.push(doc.data());
         });
       });
       console.log("getCategoryDb end");
     },
-    getGroupDb: function() {
-      console.log("getGroupDb start");
-      this.db = firebase.firestore();
-      const _this = this;
-
-      this.db.collection("group").onSnapshot(function(querySnapshot) {
-        let groupDbList = [];
-        querySnapshot.forEach(function(doc) {
-          groupDbList.push(JSON.stringify(doc.data()));
-        });
-        _this.groupedGroupList = _this.groupBy("categoryId", groupDbList);
-      });
-
-      console.log("getGroupDb end");
-    },
-    setSelectedGroup: function() {
-      this.selectedGroupList = [];
-      for (let group of this.groupedGroupList) {
-        if (group.groupByValue === this.selectedCategory.id) {
-          this.selectedGroupList = group.products;
-          return;
-        }
+    clickNew: function(){
+      this.selectedCompany={
+        id: "",
+        name: ""
       }
-    }
+      this.isNew = true
+      this.dialog = true;
+    },
+    clickEdit: function(){
+      this.isNew = false
+      this.dialog = true;
+    },
+    close() {
+      this.selectedCompany={
+        id: "",
+        name: ""
+      }
+      this.dialog = false;
+    },
+    save() {
+      this.db = firebase.firestore();
+      let newCompanyRef = null;
+      if (this.isNew) {
+        newCompanyRef = this.db.collection("company").doc();
+      } else {
+        newCompanyRef = this.db.collection("company").doc(this.selectedCompany.id);
+      }
+
+      // later...
+      console.log(newCompanyRef);
+      let data = {
+        id: newCompanyRef.id,
+        name: this.selectedCompany.name
+      };
+      newCompanyRef.set(data, { merge: true });
+      this.close();
+    },
+    deleteItem() {
+      confirm("Are you sure you want to delete this item?") &&
+        this.db
+          .collection("company")
+          .doc(this.selectedCompany.id)
+          .delete();
+    },
   }
 };
 </script>

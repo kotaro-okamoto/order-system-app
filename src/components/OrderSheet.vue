@@ -79,6 +79,7 @@ import firebase from "firebase";
 import "firebase/firestore";
 import utilsMixin from "../utils";
 import CommonFooter from "./CommonFooter.vue";
+import moment from "moment";
 
 export default {
   name: "orderSheet",
@@ -101,8 +102,8 @@ export default {
         { text: "Timestamp", value: "time" }
       ],
       orders: [],
-      //0:ソート無し 1:昇順 -1:降順
       ordersAscPattern: {
+        //0:ソート無し 1:昇順 -1:降順
         table: 0,
         time: 0,
         name: 0,
@@ -134,6 +135,7 @@ export default {
         };
         _this.orders.push(pushData);
       });
+      console.log(moment(new Date()).format("HH:mm:ss"))
       let localOrdersAscPattern = _this.ordersAscPattern
       Object.keys(localOrdersAscPattern).some(
         key => {
@@ -146,6 +148,7 @@ export default {
           }
         }
       );
+      console.log(moment(new Date()).format("HH:mm:ss"))
     });
   },
   methods: {
