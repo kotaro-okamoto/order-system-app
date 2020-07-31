@@ -1,6 +1,6 @@
 <template>
   <div class="order">
-    <v-app-bar app fixed color="#F52900" dense height="55px" flat>
+    <v-app-bar app bottom fixed color="#F52900" dense height="55px" flat>
       <v-app-bar-nav-icon dark @click="switchDrawerShow()"></v-app-bar-nav-icon>
       <v-tabs
         center-active
@@ -15,18 +15,7 @@
       </v-tabs>
     </v-app-bar>
 
-    <v-snackbar
-      v-model="completeSnackShow"
-      :timeout="timeout"
-      color="#00BFBF"
-      height="20px"
-      transition="scroll-y-reverse-transition"
-      rounded="pill"
-    >
-      <v-row justify="center">
-        <v-col cols="12" align="center" class="py-0 pl-8 ma-0">{{$t("OrderComplete")}}</v-col>
-      </v-row>
-    </v-snackbar>
+    
     <div>
       <v-tabs-items app v-model="menuTab">
         <v-tab-item v-for=" menu of menus" :key="menu.index">
@@ -49,8 +38,8 @@
           height="50px"
           width="14rem"
           class="my-2 mx-0 pa-0"
-          :disabled="this.SelectedMenus.length < 1"
-          id="sendOrderBtn"
+          :disabled="this.selectedMenus.length < 1"
+          id="btn-send-order"
           rounded
           @click="sendOrder"
         >{{$t("Order")}}</v-btn>
@@ -116,13 +105,27 @@
         small
         dark
         fixed
-        bottom
-        right
+        top
+        left
         @click="changeButton()"
       >
         <v-icon>{{activeFab.icon}}</v-icon>
       </v-btn>
     </v-fab-transition>
+    <v-snackbar
+      id="snack-order-complete"
+      v-model="completeSnackShow"
+      :timeout="timeout"
+      color="#00BFBF"
+      height="20px"
+      transition="scroll-y-reverse-transition"
+      rounded="pill"
+      centered
+    >
+      <v-row justify="center">
+        <v-col cols="12" align="center" class="py-0 pl-8 ma-0">{{$t("OrderComplete")}}</v-col>
+      </v-row>
+    </v-snackbar>
   </div>
 </template>
 
@@ -142,12 +145,12 @@ export default {
       menuTab: "",
       buttonPattern: 0,
       menus: [],
-      SelectedMenus: [],
+      selectedMenus: [],
       isDrawerShow: false,
       completeSnackShow: false,
       touchingSnackShow: false,
       touchingText: "",
-      timeout: 4000
+      timeout: 3000
     };
   },
   created: function() {
@@ -182,33 +185,33 @@ export default {
     select: function(selectId, selectName) {
       this.switchDrawerShow();
       // 選択リストを検索して同じIDがあれば選択リストの最後に並び替え(表示を一番上にするため)
-      for (let menu of this.SelectedMenus) {
+      for (let menu of this.selectedMenus) {
         if (menu.id == selectId) {
-          this.SelectedMenus.splice(this.SelectedMenus.indexOf(menu), 1);
+          this.selectedMenus.splice(this.selectedMenus.indexOf(menu), 1);
           menu.count += 1;
-          this.SelectedMenus.push(menu);
+          this.selectedMenus.push(menu);
           return;
         }
       }
       this.deleteZeroItem();
       // 選択リストに同じIDが無ければリストに追加
-      this.SelectedMenus.push({ id: selectId, name: selectName, count: 1 });
+      this.selectedMenus.push({ id: selectId, name: selectName, count: 1 });
     },
     // 杯数0を選択リストから削除
     deleteZeroItem: function() {
       // 削除後のリスト
       var deletedArray = [];
       // 選択リストを一つずつ取り出し杯数が0より上のものを削除後リストに追加
-      for (var menu of this.SelectedMenus) {
+      for (var menu of this.selectedMenus) {
         if (menu.count > 0) {
           deletedArray.push(menu);
         }
       }
       // 削除後リストを選択リストに代入
-      this.SelectedMenus = deletedArray;
+      this.selectedMenus = deletedArray;
     },
     deleteSelectItem: function(menu) {
-      this.SelectedMenus.splice(this.SelectedMenus.indexOf(menu), 1);
+      this.selectedMenus.splice(this.selectedMenus.indexOf(menu), 1);
     },
     // 選択リストの杯数(count)を変更する関数
     setSelectedMenusCount: function(selectId, selectName, changedCount) {
@@ -217,21 +220,21 @@ export default {
         changedCount = 0;
       }
       // 選択リストを検索して同じIDの'count'の値を上書き
-      for (var menu of this.SelectedMenus) {
+      for (var menu of this.selectedMenus) {
         if (menu.id == selectId) {
           this.$set(menu, "count", changedCount);
         }
       }
     },
     sendOrder: function() {
-      if (this.SelectedMenus.length > 0) {
+      if (this.selectedMenus.length > 0) {
         this.completeSnackShow = true;
       }
 
       this.switchDrawerShow();
       this.deleteZeroItem();
       var orderTime = moment(new Date()).format("HH:mm:ss");
-      for (var menu of this.SelectedMenus) {
+      for (var menu of this.selectedMenus) {
         let newOrderRef = this.db.collection("orders").doc();
         newOrderRef.set({
           table: this.group,
@@ -241,7 +244,7 @@ export default {
           time: orderTime
         });
       }
-      this.SelectedMenus = [];
+      this.selectedMenus = [];
     },
     openText: function(thisText) {
       this.touchingText = thisText;
@@ -255,7 +258,7 @@ export default {
   computed: {
     // 配列の要素順番を逆順にする
     reverseSelectedMenus() {
-      return this.SelectedMenus.slice().reverse();
+      return this.selectedMenus.slice().reverse();
     },
     category: function() {
       return this.$route.query.category;
@@ -285,8 +288,12 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-.order #sendOrderBtn{
+.order #btn-send-order{
   color: white;
+}
+
+.order #snack-order-complete{
+  padding-bottom: 44px !important
 }
 
 </style>

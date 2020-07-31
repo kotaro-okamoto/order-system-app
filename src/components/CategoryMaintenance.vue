@@ -1,25 +1,26 @@
 <template>
-  <div>
+  <div class="category-maintenance">
     <v-app-bar app color="#F52900" dense height="3px" flat></v-app-bar>
-    <v-data-table :headers="headers" :items="category" class="elevation-1" hide-default-footer>
+    <v-data-table :headers="headers" :items="category" class="elevation-1" hide-default-footer :items-per-page = -1>
       <template v-slot:top>
         <v-toolbar flat color="white">
           <v-toolbar-title>My CATEGORY</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="500px">
+          <v-dialog v-model="dialog" max-width="500px" >
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="#F52900" dark class="mb-2" v-bind="attrs" v-on="on">{{$t("NewItem")}}</v-btn>
+              <v-btn color="#F52900" fab dark top right v-bind="attrs" v-on="on" class="mt-10"><v-icon dark>mdi-plus</v-icon></v-btn>
             </template>
             <v-card>
               <v-card-title>
                 <span class="headline">{{ formTitle }}</span>
               </v-card-title>
               <v-card-text>
-                <v-container>
+                <v-container id="container-dialog-category-maintenance" >
                   <v-row>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.name" label="Category"></v-text-field>
+                      <v-text-field 
+                      v-model="editedItem.name" label="Category" ></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -147,5 +148,9 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
+#container-dialog-category-maintenance .v-input input {
+  max-height: 100px !important;
+}
+
 </style>

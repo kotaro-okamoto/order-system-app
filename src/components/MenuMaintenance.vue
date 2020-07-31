@@ -7,6 +7,7 @@
       class="elevation-1"
       group-by="category"
       hide-default-footer
+      :items-per-page = -1
     >
       <template v-slot:top>
         <v-toolbar flat color="white">
@@ -15,7 +16,7 @@
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="#F52900" dark class="mb-2" v-bind="attrs" v-on="on">{{$t("NewItem")}}</v-btn>
+              <v-btn color="#F52900" fab dark top right v-bind="attrs" v-on="on" class="mt-10"><v-icon dark>mdi-plus</v-icon></v-btn>
             </template>
             <v-card>
               <v-card-title>
@@ -43,7 +44,7 @@
                     </v-col>
                     <v-col cols="12" md="6" lg="6" xl="6">
                       <v-text-field
-                        id="text-input-new-name"
+                        id="text-input-dialog-name"
                         v-model="editedItem.name"
                         label="Name"
                         height="44px"
@@ -204,4 +205,12 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+.v-dialog .v-select__selections {
+  line-height: 30px;
+}
+
+#text-input-dialog-name {
+  margin: 0;
+  padding: 0;
+}
 </style>

@@ -34,7 +34,7 @@
         </v-container>
       </v-card>
     </div>
-    <v-snackbar v-model="touchingSnackShow" :timeout="0" dark top>{{touchingText}}</v-snackbar>
+    <v-snackbar v-model="touchingSnackShow" :timeout="-1" dark top>{{touchingText}}</v-snackbar>
     <transition-group name="slide-fade">
       <div v-for="order of orders" v-bind:key="order.id" class="order-top pa-0 my-1">
         <v-card height="44px" color="#f7f39c">
@@ -101,7 +101,13 @@ export default {
         { text: "Timestamp", value: "time" }
       ],
       orders: [],
-      ordersIsAsc: {},
+      //0:ソート無し 1:昇順 -1:降順
+      ordersAscPattern: {
+        table: 0,
+        time: 0,
+        name: 0,
+        count: 0
+      },
       ordersIsNumeric: {
         table: false,
         time: false,
@@ -111,6 +117,36 @@ export default {
       touchingSnackShow: false,
       touchingText: ""
     };
+  },
+  created: function() {
+
+    this.db = firebase.firestore();
+
+    var _this = this;
+    // todos コレクションを監視する
+    this.db.collection("orders").onSnapshot(function(querySnapshot) {
+      _this.orders = [];
+      querySnapshot.forEach(function(doc) {
+        console.log("querysnapshot")
+        let pushData = {
+          id: doc.id,
+          data: doc.data()
+        };
+        _this.orders.push(pushData);
+      });
+      let localOrdersAscPattern = _this.ordersAscPattern
+      Object.keys(localOrdersAscPattern).some(
+        key => {
+          if(localOrdersAscPattern[key] == 0){
+            return false
+          }else{
+            localOrdersAscPattern[key] = -localOrdersAscPattern[key]
+            _this.sortItems(key)
+            return true
+          }
+        }
+      );
+    });
   },
   methods: {
     deleteItem(itemId) {
@@ -122,26 +158,23 @@ export default {
     sortItems(sortByString) {
       //sortByString:並び替えるフィールド名
 
-      //sort関数に使用する昇順降順判別 1:昇順 -1:降順
-      let ascOrDescNum = 1;
-
       //並び替えるフィールド名の現在の昇順降順情報を取得
-      let sortByIsAsc = this.ordersIsAsc[sortByString];
+      let sortByAscPattern = this.ordersAscPattern[sortByString];
 
-      //現在がtrue(昇順)なら降順にする
-      if (sortByIsAsc) {
-        ascOrDescNum = -1;
+      //現在が 1:昇順なら -1:降順にする
+      if (sortByAscPattern == 1) {
+        sortByAscPattern = -1;
+      }else{
+        sortByAscPattern = 1
       }
 
       //全てのフィールドの昇順降順情報をリセット
-      Object.keys(this.ordersIsAsc).forEach(
-        key => (this.ordersIsAsc[key] = false)
+      Object.keys(this.ordersAscPattern).forEach(
+        key => (this.ordersAscPattern[key] = 0)
       );
 
-      //処理前がfalseの場合のみ該当の昇順降順情報をtrue(昇順)にする
-      if (!sortByIsAsc) {
-        this.ordersIsAsc[sortByString] = true;
-      }
+      //該当の昇順降順情報を更新
+      this.ordersAscPattern[sortByString] = sortByAscPattern
 
       //並び替え処理
       return this.orders.sort((a, b) => {
@@ -153,9 +186,9 @@ export default {
         };
 
         return compare(a, b, isNumeric) < 0
-          ? -ascOrDescNum
+          ? -sortByAscPattern
           : compare(a, b, isNumeric) > 0
-          ? ascOrDescNum
+          ? sortByAscPattern
           : 0;
       });
     },
@@ -168,22 +201,7 @@ export default {
       this.touchingSnackShow = false;
     }
   },
-  created: function() {
-    this.db = firebase.firestore();
-
-    var _this = this;
-    // todos コレクションを監視する
-    this.db.collection("orders").onSnapshot(function(querySnapshot) {
-      _this.orders = [];
-      querySnapshot.forEach(function(doc) {
-        let pushData = {
-          id: doc.id,
-          data: doc.data()
-        };
-        _this.orders.push(pushData);
-      });
-    });
-  }
+  
 };
 </script>
 
