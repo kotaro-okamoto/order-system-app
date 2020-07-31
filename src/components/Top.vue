@@ -6,24 +6,24 @@
         <v-card-title class="pt-4 pb-0 px-0 ma-0">
           <v-row justify="center">
             <v-col cols="12" sm="6" md="4" class="pa-0 ma-0">
-              <span>{{$t("CreateForUser")}}</span>
+              <span>{{$t("CreateForCompany")}}</span>
             </v-col>
           </v-row>
         </v-card-title>
         <v-card-text>
           <v-container>
             <v-row align="center" justify="center">
-              <v-col cols="10" class="pa-0 ma-0">
+              <v-col cols="12" sm="9" md="10" lg="10" xl="10" class="pa-0 ma-0">
                 <v-select
                   :items="company"
                   v-model="selectedCompany"
                   item-text="name"
                   item-value="id"
-                  label="category"
+                  label="Company"
                   return-object
                 />
                 </v-col>
-                <v-col cols="2" class="pa-0 ma-0">
+                <v-col cols="12" sm="3" md="2" lg="2" xl="2" class="pa-0 ma-0">
                   <v-icon medium class="mr-2" @click="clickNew">mdi-plus</v-icon>
                   <v-icon :disabled="!this.selectedCompany.id" medium class="mr-2" @click="clickEdit">mdi-pencil</v-icon>
                   <v-icon medium :disabled="!this.selectedCompany.id" @click="deleteItem">mdi-delete</v-icon>
@@ -46,7 +46,7 @@
                     company: this.selectedCompany.id,
                   }}"
                   target="_blank"
-                >ユーザ管理ページへ</v-btn>
+                >{{$t("CompanyPage")}}</v-btn>
               </v-col>
             </v-row>
           </v-container>
@@ -55,10 +55,10 @@
       <v-dialog v-model="dialog" max-width="500px" >
         <v-card>
           <v-card-title>
-            <span class="headline">あああ</span>
+            <span class="headline">{{dialogTitle}}</span>
           </v-card-title>
           <v-card-text>
-            <v-container id="container-dialog-category-maintenance" >
+            <v-container id="container-dialog-company-edit" >
               <v-row>
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field 
@@ -102,6 +102,7 @@ export default {
         name: ""
       },
       dialog: false,
+      dialogTitle: "",
       isNew: true,
       company: []
     };
@@ -129,10 +130,12 @@ export default {
         id: "",
         name: ""
       }
+      this.dialogTitle = "New Item"
       this.isNew = true
       this.dialog = true;
     },
     clickEdit: function(){
+      this.dialogTitle = "Edit Item"
       this.isNew = false
       this.dialog = true;
     },
@@ -185,6 +188,10 @@ export default {
 
 .top .v-label {
   font-size: 18px;
+}
+
+#container-dialog-company-edit .v-input input {
+  max-height: 100px !important;
 }
 </style>
 

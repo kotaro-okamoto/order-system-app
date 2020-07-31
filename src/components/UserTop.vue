@@ -1,5 +1,5 @@
 <template>
-  <div class="top">
+  <div class="userTop">
     <v-app-bar app color="#F52900" dense height="3px" flat></v-app-bar>
     <div>
       <v-card class="pa-0 my-2 mx-10">
@@ -172,7 +172,7 @@ import utilsMixin from "../utils";
 import CommonFooter from "./CommonFooter.vue";
 
 export default {
-  name: "Top",
+  name: "UserTop",
   components: {
     CommonFooter
   },
@@ -238,22 +238,22 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-.top .v-btn__content {
+.userTop .v-btn__content {
   color: white;
 }
 
-.top .v-select__selections {
+.userTop .v-select__selections {
   height: 50px;
   line-height: 30px;
 }
 
-.top .v-label {
+.userTop .v-label {
   font-size: 18px;
 }
 </style>
 
 <style scoped>
-.top {
+.userTop {
   text-align: center;
   height: 100%;
   width: 100%;
