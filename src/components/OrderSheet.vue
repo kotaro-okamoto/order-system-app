@@ -155,10 +155,12 @@ export default {
   },
   methods: {
     deleteItem(itemId) {
-      this.db
-        .collection("orders")
-        .doc(itemId)
-        .delete();
+      let deleteField = {};
+      (deleteField[itemId] = firebase.firestore.FieldValue.delete()),
+        this.db
+          .collection(this.company)
+          .doc("order")
+          .update(deleteField);
     },
     sortItems(sortByString) {
       //sortByString:並び替えるフィールド名
