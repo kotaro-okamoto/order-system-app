@@ -1,5 +1,5 @@
 import firebase from 'firebase'
-  // Initialize Firebase
+// Initialize Firebase
 firebase.initializeApp({
   apiKey: "AIzaSyB-ioZUSOhshOl2UJH7H3zFv31UG6bF6ic",
   authDomain: "pwa-test-project-93f2a.firebaseapp.com",
@@ -10,3 +10,5 @@ firebase.initializeApp({
   appId: "1:516732838177:web:cc9caada83cfcdeba51e60",
   measurementId: "G-4FB4CG9BWD"
 });
+
+export default {}
