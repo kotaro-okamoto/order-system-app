@@ -1,26 +1,33 @@
 <template>
   <div class="category-maintenance">
     <v-app-bar app color="#F52900" dense height="3px" flat></v-app-bar>
-    <v-data-table :headers="headers" :items="category" class="elevation-1" hide-default-footer :items-per-page = -1>
+    <v-data-table
+      :headers="headers"
+      :items="category"
+      class="elevation-1"
+      hide-default-footer
+      :items-per-page="-1"
+    >
       <template v-slot:top>
         <v-toolbar flat color="white">
           <v-toolbar-title>My CATEGORY</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="500px" >
+          <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="#F52900" fab dark top right v-bind="attrs" v-on="on" class="mt-10"><v-icon dark>mdi-plus</v-icon></v-btn>
+              <v-btn color="#F52900" fab dark top right v-bind="attrs" v-on="on" class="mt-10">
+                <v-icon dark>mdi-plus</v-icon>
+              </v-btn>
             </template>
             <v-card>
               <v-card-title>
                 <span class="headline">{{ formTitle }}</span>
               </v-card-title>
               <v-card-text>
-                <v-container id="container-dialog-category-maintenance" >
+                <v-container id="container-dialog-category-maintenance">
                   <v-row>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field 
-                      v-model="editedItem.name" label="Category" ></v-text-field>
+                      <v-text-field v-model="editedItem.name" label="Category"></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -48,9 +55,11 @@
 <script>
 import firebase from "firebase";
 import "firebase/firestore";
+import utilsMixin from "../utils";
 import CommonFooter from "./CommonFooter.vue";
 
 export default {
+  mixins: [utilsMixin],
   components: {
     CommonFooter
   },
@@ -75,6 +84,9 @@ export default {
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "New Item" : "Edit Item";
+    },
+    company: function() {
+      return this.$route.query.company;
     }
   },
 
@@ -94,12 +106,14 @@ export default {
       this.db = firebase.firestore();
       const _this = this;
 
-      this.db.collection("category").onSnapshot(function(querySnapshot) {
-        _this.category = [];
-        querySnapshot.forEach(function(doc) {
-          _this.category.push(doc.data());
+      this.db
+        .collection(this.company)
+        .doc("category")
+        .onSnapshot(function(doc) {
+          _this.category = [];
+          let data = doc.data();
+          Object.keys(data).forEach(key => _this.category.push(data[key]));
         });
-      });
       console.log("getCategoryDb end");
     },
     editItem(item) {
@@ -109,11 +123,13 @@ export default {
     },
 
     deleteItem(item) {
-      confirm("Are you sure you want to delete this item?") &&
-        this.db
-          .collection("category")
-          .doc(item.id)
-          .delete();
+      let deleteField = {};
+      (deleteField[item.id] = firebase.firestore.FieldValue.delete()),
+        confirm("Are you sure you want to delete this item?") &&
+          this.db
+            .collection(this.company)
+            .doc("category")
+            .update(deleteField);
     },
 
     close() {
@@ -123,24 +139,25 @@ export default {
         this.editedIndex = -1;
       });
     },
-
     save() {
       this.db = firebase.firestore();
-      let newCategoryRef = null;
+      let newCategoryRef = this.db.collection(this.company).doc("category");
+
+      let updateId = "";
       if (this.editedIndex > -1) {
         // Add a new document with a generated id.
-        newCategoryRef = this.db.collection("category").doc(this.editedItem.id);
+        updateId = this.editedItem.id;
       } else {
-        newCategoryRef = this.db.collection("category").doc();
+        updateId = this.createRandomId();
       }
 
-      // later...
-      console.log(newCategoryRef);
-      let data = {
-        id: newCategoryRef.id,
+      let updateData = {};
+      updateData[updateId] = {
+        id: updateId,
         name: this.editedItem.name
       };
-      newCategoryRef.set(data, { merge: true });
+
+      newCategoryRef.set(updateData, { merge: true });
       this.close();
     }
   }
@@ -152,5 +169,4 @@ export default {
 #container-dialog-category-maintenance .v-input input {
   max-height: 100px !important;
 }
-
 </style>

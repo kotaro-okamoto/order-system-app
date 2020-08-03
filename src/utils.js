@@ -57,6 +57,24 @@ export default {
         })
       }
       return resultJson;
-    }
+    },
+    createRandomId: function () {
+      // 生成する文字列の長さ
+      let returnValuelength = 12;
+
+      // 生成する文字列に含める文字セット
+      let candidateStringList =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNMNOPQRSTUVWXYZ123456789";
+
+      let candidateStringListLength = candidateStringList.length;
+      let returnValue = "";
+      for (var i = 0; i < returnValuelength; i++) {
+        returnValue +=
+          candidateStringList[
+          Math.floor(Math.random() * candidateStringListLength)
+          ];
+      }
+      return returnValue;
+    },
   }
 }

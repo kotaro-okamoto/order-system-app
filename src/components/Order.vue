@@ -1,6 +1,6 @@
 <template>
   <div class="order">
-    <v-app-bar app bottom fixed color="#F52900" dense height="55px" flat>
+    <v-app-bar app fixed color="#F52900" dense height="55px" flat>
       <v-app-bar-nav-icon dark @click="switchDrawerShow()"></v-app-bar-nav-icon>
       <v-tabs
         center-active
@@ -15,7 +15,6 @@
       </v-tabs>
     </v-app-bar>
 
-    
     <div>
       <v-tabs-items app v-model="menuTab">
         <v-tab-item v-for=" menu of menus" :key="menu.index">
@@ -105,8 +104,8 @@
         small
         dark
         fixed
-        top
-        left
+        bottom
+        right
         @click="changeButton()"
       >
         <v-icon>{{activeFab.icon}}</v-icon>
@@ -141,7 +140,6 @@ export default {
   data: function() {
     return {
       db: "",
-      mixins: [utilsMixin],
       menuTab: "",
       buttonPattern: 0,
       menus: [],
@@ -164,18 +162,21 @@ export default {
       }
     },
     getMenusDb: function() {
-      console.log("getMenusDb start");
       this.db = firebase.firestore();
       const _this = this;
-      this.db.collection("menusDB").onSnapshot(function(querySnapshot) {
-        let menusDbData = [];
-        querySnapshot.forEach(function(doc) {
-          menusDbData.push(JSON.stringify(doc.data()));
+
+      this.db
+        .collection(this.company)
+        .doc("menu")
+        .onSnapshot(function(doc) {
+          let menusDbData = [];
+          let data = doc.data();
+          Object.keys(data).forEach(key =>
+            menusDbData.push(JSON.stringify(data[key]))
+          );
+          _this.menus = [];
+          _this.menus = _this.groupBy("category", menusDbData);
         });
-        _this.menus = [];
-        _this.menus = _this.groupBy("category", menusDbData);
-      });
-      console.log("getMenusDb end");
     },
     switchDrawerShow: function() {
       this.isDrawerShow = !this.isDrawerShow;
@@ -233,19 +234,24 @@ export default {
 
       this.switchDrawerShow();
       this.deleteZeroItem();
-      var orderTime = moment(new Date()).format("HH:mm:ss");
+      let orderTime = moment(new Date()).format("HH:mm:ss");
       for (var menu of this.selectedMenus) {
-        let newOrderRef = this.db.collection("orders").doc();
-        newOrderRef.set({
-          table: this.group,
-          id: newOrderRef.id,
+        let newOrderRef = this.db.collection(this.company).doc("order");
+        let orderId = this.group + "_" + this.createRandomId();
+        let addData = {};
+        addData[orderId] = {
+          group: this.group,
+          id: orderId,
           name: menu.name,
           count: menu.count,
           time: orderTime
-        });
+        };
+
+        newOrderRef.set(addData, { merge: true });
       }
       this.selectedMenus = [];
     },
+
     openText: function(thisText) {
       this.touchingText = thisText;
       this.touchingSnackShow = true;
@@ -256,6 +262,9 @@ export default {
     }
   },
   computed: {
+    company: function() {
+      return this.$route.query.company;
+    },
     // 配列の要素順番を逆順にする
     reverseSelectedMenus() {
       return this.selectedMenus.slice().reverse();
@@ -288,14 +297,13 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-.order #btn-send-order{
+.order #btn-send-order {
   color: white;
 }
 
-.order #snack-order-complete{
-  padding-bottom: 44px !important
+.order #snack-order-complete {
+  padding-bottom: 44px !important;
 }
-
 </style>
 
 
@@ -304,7 +312,6 @@ nav {
   width: 350px !important;
   max-width: 85vw !important;
 }
-
 
 .fav-enter-active,
 .fav-leave-active {

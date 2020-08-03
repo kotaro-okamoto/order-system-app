@@ -20,7 +20,10 @@
                   color="#F52900"
                   rounded
                   dark
-                  to="/orderSheet"
+                  :to="{name: 'orderSheet', 
+                    query: {
+                      company: this.company 
+                  }}"
                   target="_blank"
                 >{{$t("OrderHistory")}}</v-btn>
               </v-col>
@@ -74,7 +77,7 @@
             <v-row justify="center">
               <v-col cols="12" xs="12" sm="6" md="6" lg="6" xl="6" class="pa-0 mx-0 my-3">
                 <v-btn
-                :disabled="!this.selectedCategory || !this.selectedGroup"
+                  :disabled="!this.selectedCategory || !this.selectedGroup"
                   height="60px"
                   width="16rem"
                   color="#F52900"
@@ -97,8 +100,9 @@
                   target="_blank"
                   :to="{name: 'order', 
                     query: {
-                    category: this.selectedCategory.name,
-                    group: this.selectedGroup.groupName
+                      company: this.company ,
+                      category: this.selectedCategory.name,
+                      group: this.selectedGroup.groupName
                   }}"
                 >{{$t("UserPage")}}</v-btn>
               </v-col>
@@ -127,7 +131,10 @@
                   color="#00CCF5"
                   rounded
                   dark
-                  :to="{name: 'CategoryMaintenance'}"
+                  :to="{name: 'CategoryMaintenance', 
+                    query: {
+                      company: this.company 
+                  }}"
                   target="_blank"
                 >{{$t("Category")}}</v-btn>
               </v-col>
@@ -138,7 +145,10 @@
                   color="#00CCF5"
                   rounded
                   dark
-                  :to="{name: 'GroupMaintenance'}"
+                  :to="{name: 'GroupMaintenance', 
+                    query: {
+                      company: this.company 
+                  }}"
                   target="_blank"
                 >{{$t("Group")}}</v-btn>
               </v-col>
@@ -149,7 +159,10 @@
                   color="#00CCF5"
                   rounded
                   dark
-                  :to="{name: 'MenuMaintenance'}"
+                  :to="{name: 'MenuMaintenance', 
+                    query: {
+                      company: this.company 
+                  }}"
                   target="_blank"
                 >{{$t("Menu")}}</v-btn>
               </v-col>
@@ -159,6 +172,7 @@
         </v-card-actions>
       </v-card>
     </div>
+
     <v-footer app padless height="44px">
       <CommonFooter />
     </v-footer>
@@ -187,13 +201,18 @@ export default {
     };
   },
   watch: {
-    selectedCategory: function(){
-      this.selectedGroup=""
-    },
+    selectedCategory: function() {
+      this.selectedGroup = "";
+    }
   },
   created() {
     this.getCategoryDb();
     this.getGroupDb();
+  },
+  computed: {
+    company: function() {
+      return this.$route.query.company;
+    }
   },
   methods: {
     getCategoryDb: function() {
@@ -201,25 +220,33 @@ export default {
       this.db = firebase.firestore();
       const _this = this;
 
-      this.db.collection("category").onSnapshot(function(querySnapshot) {
-        querySnapshot.forEach(function(doc) {
-          _this.category.push(doc.data());
+      this.db
+        .collection(this.company)
+        .doc("category")
+        .onSnapshot(function(doc) {
+          _this.category = [];
+          let data = doc.data();
+          Object.keys(data).forEach(key => _this.category.push(data[key]));
         });
-      });
       console.log("getCategoryDb end");
     },
     getGroupDb: function() {
       console.log("getGroupDb start");
       this.db = firebase.firestore();
+
       const _this = this;
 
-      this.db.collection("group").onSnapshot(function(querySnapshot) {
-        let groupDbList = [];
-        querySnapshot.forEach(function(doc) {
-          groupDbList.push(JSON.stringify(doc.data()));
+      this.db
+        .collection(this.company)
+        .doc("group")
+        .onSnapshot(function(doc) {
+          let groupDbList = [];
+          let data = doc.data();
+          Object.keys(data).forEach(key =>
+            groupDbList.push(JSON.stringify(data[key]))
+          );
+          _this.groupedGroupList = _this.groupBy("categoryId", groupDbList);
         });
-        _this.groupedGroupList = _this.groupBy("categoryId", groupDbList);
-      });
 
       console.log("getGroupDb end");
     },

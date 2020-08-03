@@ -7,7 +7,7 @@
       class="elevation-1"
       group-by="category"
       hide-default-footer
-      :items-per-page = -1
+      :items-per-page="-1"
     >
       <template v-slot:top>
         <v-toolbar flat color="white">
@@ -16,7 +16,9 @@
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="#F52900" fab dark top right v-bind="attrs" v-on="on" class="mt-10"><v-icon dark>mdi-plus</v-icon></v-btn>
+              <v-btn color="#F52900" fab dark top right v-bind="attrs" v-on="on" class="mt-10">
+                <v-icon dark>mdi-plus</v-icon>
+              </v-btn>
             </template>
             <v-card>
               <v-card-title>
@@ -77,12 +79,14 @@
 <script>
 import firebase from "firebase";
 import "firebase/firestore";
+import utilsMixin from "../utils";
 import CommonFooter from "./CommonFooter.vue";
 
 export default {
   components: {
     CommonFooter
   },
+  mixins: [utilsMixin],
   data: () => ({
     dialog: false,
     headers: [
@@ -96,7 +100,7 @@ export default {
     editedIndex: -1,
     editedItem: {
       name: "",
-      category: "",
+      category: {},
       newCategoryName: ""
     },
     defaultItem: {
@@ -109,6 +113,9 @@ export default {
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "New Item" : "Edit Item";
+    },
+    company: function() {
+      return this.$route.query.company;
     }
   },
 
@@ -128,40 +135,53 @@ export default {
       this.db = firebase.firestore();
       const _this = this;
 
-      this.db.collection("menusDB").onSnapshot(function(querySnapshot) {
-        _this.menus = [];
-        _this.menuCategories = [
-          {
-            name: "新規作成",
-            isNew: true
-          }
-        ];
-        querySnapshot.forEach(function(doc) {
+      this.db
+        .collection(this.company)
+        .doc("menu")
+        .onSnapshot(function(doc) {
+          _this.menus = [];
+          _this.menuCategories = [
+            {
+              name: "新規作成",
+              isNew: true
+            }
+          ];
+
           let data = doc.data();
-          _this.menus.push(data);
-          _this.menuCategories.push({
-            name: data.category,
-            isNew: false
+          Object.keys(data).forEach(key => {
+            _this.menus.push(data[key]);
+            _this.menuCategories.push({
+              name: data[key].category,
+              isNew: false
+            });
           });
         });
-      });
-
-      console.log("getMenusDb end");
     },
     editItem(item) {
       this.editedIndex = this.menus.indexOf(item);
-      this.editedItem = Object.assign({}, item);
+      let tempEditedItem = {
+        category: {
+          isNew: false,
+          name: item.category
+        },
+        id: item.id,
+        name: item.name
+      };
+      console.log(item);
+      this.editedItem = Object.assign({}, tempEditedItem);
+      // this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
 
     deleteItem(item) {
-      confirm("Are you sure you want to delete this item?") &&
-        this.db
-          .collection("menusDB")
-          .doc(item.id)
-          .delete();
+      let deleteField = {};
+      (deleteField[item.id] = firebase.firestore.FieldValue.delete()),
+        confirm("Are you sure you want to delete this item?") &&
+          this.db
+            .collection(this.company)
+            .doc("menu")
+            .update(deleteField);
     },
-
     close() {
       this.dialog = false;
       this.categoryIsNew = false;
@@ -173,12 +193,13 @@ export default {
 
     save() {
       this.db = firebase.firestore();
-      let newMenuRef = null;
+      let newMenuRef = this.db.collection(this.company).doc("menu");
+      let updateId = "";
       if (this.editedIndex > -1) {
         // Add a new document with a generated id.
-        newMenuRef = this.db.collection("menusDB").doc(this.editedItem.id);
+        updateId = this.editedItem.id;
       } else {
-        newMenuRef = this.db.collection("menusDB").doc();
+        updateId = this.createRandomId();
       }
 
       let categoryData = "";
@@ -188,12 +209,15 @@ export default {
         categoryData = this.editedItem.category.name;
       }
 
-      let data = {
-        id: newMenuRef.id,
+      let updateData = {};
+      updateData[updateId] = {
+        id: updateId,
         name: this.editedItem.name,
         category: categoryData
       };
-      newMenuRef.set(data, { merge: true });
+
+      console.log(updateData);
+      newMenuRef.set(updateData, { merge: true });
       this.close();
     },
     checkNew: function(item) {

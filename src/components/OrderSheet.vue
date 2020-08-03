@@ -10,7 +10,7 @@
               cols="3"
               class="pa-0 text-truncate"
               align="center"
-              @click="sortItems('table')"
+              @click="sortItems('group')"
             >{{$t("Table")}}</v-col>
             <v-col
               cols="3"
@@ -47,11 +47,11 @@
               </v-col>
               <v-col cols="3" class="pa-0 text-truncate" align="center">
                 <span
-                  @mousedown="openText(order.data.table)"
+                  @mousedown="openText(order.data.group)"
                   @mouseup="closeText()"
-                  @touchstart="openText(order.data.table)"
+                  @touchstart="openText(order.data.group)"
                   @touchend="closeText()"
-                >{{order.data.table}}</span>
+                >{{order.data.group}}</span>
               </v-col>
               <v-col cols="3" class="pa-0 text-truncate" align="left">
                 <span
@@ -79,7 +79,6 @@ import firebase from "firebase";
 import "firebase/firestore";
 import utilsMixin from "../utils";
 import CommonFooter from "./CommonFooter.vue";
-import moment from "moment";
 
 export default {
   name: "orderSheet",
@@ -95,7 +94,7 @@ export default {
           text: "Group",
           align: "start",
           sortable: false,
-          value: "table"
+          value: "group"
         },
         { text: "Name", value: "name" },
         { text: "Count", value: "count" },
@@ -104,13 +103,13 @@ export default {
       orders: [],
       ordersAscPattern: {
         //0:ソート無し 1:昇順 -1:降順
-        table: 0,
+        group: 0,
         time: 0,
         name: 0,
         count: 0
       },
       ordersIsNumeric: {
-        table: false,
+        group: false,
         time: false,
         name: false,
         count: true
@@ -120,36 +119,39 @@ export default {
     };
   },
   created: function() {
-
     this.db = firebase.firestore();
 
-    var _this = this;
-    // todos コレクションを監視する
-    this.db.collection("orders").onSnapshot(function(querySnapshot) {
-      _this.orders = [];
-      querySnapshot.forEach(function(doc) {
-        console.log("querysnapshot")
-        let pushData = {
-          id: doc.id,
-          data: doc.data()
-        };
-        _this.orders.push(pushData);
-      });
-      console.log(moment(new Date()).format("HH:mm:ss"))
-      let localOrdersAscPattern = _this.ordersAscPattern
-      Object.keys(localOrdersAscPattern).some(
-        key => {
-          if(localOrdersAscPattern[key] == 0){
-            return false
-          }else{
-            localOrdersAscPattern[key] = -localOrdersAscPattern[key]
-            _this.sortItems(key)
-            return true
+    let _this = this;
+
+    this.db
+      .collection(this.company)
+      .doc("order")
+      .onSnapshot(function(doc) {
+        _this.orders = [];
+        let data = doc.data();
+        Object.keys(data).forEach(key =>
+          _this.orders.push({
+            id: data[key]["id"],
+            data: data[key]
+          })
+        );
+
+        let localOrdersAscPattern = _this.ordersAscPattern;
+        Object.keys(localOrdersAscPattern).some(key => {
+          if (localOrdersAscPattern[key] == 0) {
+            return false;
+          } else {
+            localOrdersAscPattern[key] = -localOrdersAscPattern[key];
+            _this.sortItems(key);
+            return true;
           }
-        }
-      );
-      console.log(moment(new Date()).format("HH:mm:ss"))
-    });
+        });
+      });
+  },
+  computed: {
+    company: function() {
+      return this.$route.query.company;
+    }
   },
   methods: {
     deleteItem(itemId) {
@@ -167,8 +169,8 @@ export default {
       //現在が 1:昇順なら -1:降順にする
       if (sortByAscPattern == 1) {
         sortByAscPattern = -1;
-      }else{
-        sortByAscPattern = 1
+      } else {
+        sortByAscPattern = 1;
       }
 
       //全てのフィールドの昇順降順情報をリセット
@@ -177,7 +179,7 @@ export default {
       );
 
       //該当の昇順降順情報を更新
-      this.ordersAscPattern[sortByString] = sortByAscPattern
+      this.ordersAscPattern[sortByString] = sortByAscPattern;
 
       //並び替え処理
       return this.orders.sort((a, b) => {
@@ -203,8 +205,7 @@ export default {
       this.touchingText = "";
       this.touchingSnackShow = false;
     }
-  },
-  
+  }
 };
 </script>
 
