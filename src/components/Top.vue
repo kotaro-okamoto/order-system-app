@@ -22,11 +22,16 @@
                   label="Company"
                   return-object
                 />
-                </v-col>
-                <v-col cols="12" sm="3" md="2" lg="2" xl="2" class="pa-0 ma-0">
-                  <v-icon medium class="mr-2" @click="clickNew">mdi-plus</v-icon>
-                  <v-icon :disabled="!this.selectedCompany.id" medium class="mr-2" @click="clickEdit">mdi-pencil</v-icon>
-                  <v-icon medium :disabled="!this.selectedCompany.id" @click="deleteItem">mdi-delete</v-icon>
+              </v-col>
+              <v-col cols="12" sm="3" md="2" lg="2" xl="2" class="pa-0 ma-0">
+                <v-icon medium class="mr-2" @click="clickNew">mdi-plus</v-icon>
+                <v-icon
+                  :disabled="!this.selectedCompany.id"
+                  medium
+                  class="mr-2"
+                  @click="clickEdit"
+                >mdi-pencil</v-icon>
+                <v-icon medium :disabled="!this.selectedCompany.id" @click="deleteItem">mdi-delete</v-icon>
               </v-col>
             </v-row>
           </v-container>
@@ -40,7 +45,7 @@
                   width="16rem"
                   color="#F52900"
                   rounded
-                  :disabled="!this.selectedCompany.id" 
+                  :disabled="!this.selectedCompany.id"
                   :to="{name: 'userTop', 
                     query: {
                     company: this.selectedCompany.id,
@@ -52,19 +57,16 @@
           </v-container>
         </v-card-actions>
       </v-card>
-      <v-dialog v-model="dialog" max-width="500px" >
+      <v-dialog v-model="dialog" max-width="500px">
         <v-card>
           <v-card-title>
             <span class="headline">{{dialogTitle}}</span>
           </v-card-title>
           <v-card-text>
-            <v-container id="container-dialog-company-edit" >
+            <v-container id="container-dialog-company-edit">
               <v-row>
                 <v-col cols="12" sm="6" md="4">
-                  <v-text-field 
-                  v-model="selectedCompany.name"
-                  label="Company" 
-                  ></v-text-field>
+                  <v-text-field v-model="selectedCompany.name" label="Company"></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -114,46 +116,54 @@ export default {
     getCompanyDb: function() {
       console.log("getCategoryDb start");
       this.db = firebase.firestore();
-      
+
       const _this = this;
 
       this.db.collection("company").onSnapshot(function(querySnapshot) {
-        _this.company = []
+        _this.company = [];
         querySnapshot.forEach(function(doc) {
           _this.company.push(doc.data());
         });
       });
       console.log("getCategoryDb end");
     },
-    clickNew: function(){
-      this.selectedCompany={
+    clickNew: function() {
+      this.selectedCompany = {
         id: "",
         name: ""
-      }
-      this.dialogTitle = "New Item"
-      this.isNew = true
+      };
+      this.dialogTitle = "New Item";
+      this.isNew = true;
       this.dialog = true;
     },
-    clickEdit: function(){
-      this.dialogTitle = "Edit Item"
-      this.isNew = false
+    clickEdit: function() {
+      this.dialogTitle = "Edit Item";
+      this.isNew = false;
       this.dialog = true;
     },
     close() {
-      this.selectedCompany={
+      this.selectedCompany = {
         id: "",
         name: ""
-      }
+      };
       this.dialog = false;
     },
     save() {
       this.db = firebase.firestore();
-      let newCompanyRef = null;
+      let updateId = "";
       if (this.isNew) {
-        newCompanyRef = this.db.collection("company").doc();
+        // Add a new document with a generated id.
+        updateId = this.createRandomId();
       } else {
-        newCompanyRef = this.db.collection("company").doc(this.selectedCompany.id);
+        updateId = this.selectedCompany.id;
       }
+
+      this.saveCompany(updateId);
+      this.createCompanyDb(updateId);
+      this.close();
+    },
+    saveCompany(updateId) {
+      let newCompanyRef = this.db.collection("company").doc(updateId);
 
       // later...
       console.log(newCompanyRef);
@@ -162,7 +172,13 @@ export default {
         name: this.selectedCompany.name
       };
       newCompanyRef.set(data, { merge: true });
-      this.close();
+    },
+    createCompanyDb(updateId) {
+      let newCollection = this.db.collection(updateId);
+      newCollection.doc("category").set({});
+      newCollection.doc("group").set({});
+      newCollection.doc("menu").set({});
+      newCollection.doc("order").set({});
     },
     deleteItem() {
       confirm("Are you sure you want to delete this item?") &&
@@ -170,7 +186,7 @@ export default {
           .collection("company")
           .doc(this.selectedCompany.id)
           .delete();
-    },
+    }
   }
 };
 </script>
