@@ -57,7 +57,28 @@
           </v-container>
         </v-card-actions>
       </v-card>
-      <v-dialog v-model="dialog" max-width="500px">
+      <v-dialog v-model="editDialog" max-width="500px">
+        <v-card>
+          <v-card-title>
+            <span class="headline">{{dialogTitle}}</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container id="container-dialog-company-edit">
+              <v-row>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field v-model="selectedCompany.name" label="Company"></v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="#F52900" text @click="close">{{$t("Cancel")}}</v-btn>
+            <v-btn color="blue darken-1" text @click="save">{{$t("Save")}}</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-dialog v-model="deleteDialog" max-width="500px">
         <v-card>
           <v-card-title>
             <span class="headline">{{dialogTitle}}</span>
@@ -103,7 +124,8 @@ export default {
         id: "",
         name: ""
       },
-      dialog: false,
+      editDialog: false,
+      deleteDialog: false,
       dialogTitle: "",
       isNew: true,
       company: []
@@ -134,19 +156,15 @@ export default {
       };
       this.dialogTitle = "New Item";
       this.isNew = true;
-      this.dialog = true;
+      this.editDialog = true;
     },
     clickEdit: function() {
       this.dialogTitle = "Edit Item";
       this.isNew = false;
-      this.dialog = true;
+      this.editDialog = true;
     },
     close() {
-      this.selectedCompany = {
-        id: "",
-        name: ""
-      };
-      this.dialog = false;
+      this.editDialog = false;
     },
     save() {
       this.db = firebase.firestore();
@@ -186,6 +204,17 @@ export default {
           .collection("company")
           .doc(this.selectedCompany.id)
           .delete();
+      this.deleteCollection(this.db.collection(this.selectedCompany.id));
+    }
+  },
+  watch: {
+    editDialog: function(val) {
+      if (val == false) {
+        this.selectedCompany = {
+          id: "",
+          name: ""
+        };
+      }
     }
   }
 };
