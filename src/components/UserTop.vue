@@ -10,6 +10,23 @@
             </v-col>
           </v-row>
         </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row justify="center">
+              <v-col cols="12" sm="6" md="4" class="pa-0 ma-0">
+                <v-select
+                  :items="category"
+                  v-model="selectedToOrderSheetCategory"
+                  item-text="name"
+                  item-value="name"
+                  label="category"
+                  return-object
+                  @change="setSelectedGroup()"
+                />
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
         <v-card-actions>
           <v-container>
             <v-row justify="center">
@@ -22,7 +39,8 @@
                   dark
                   :to="{name: 'orderSheet', 
                     query: {
-                      company: this.company 
+                      company: this.company ,
+                    category: this.selectedToOrderSheetCategory.id
                   }}"
                   target="_blank"
                 >{{$t("OrderHistory")}}</v-btn>
@@ -47,7 +65,7 @@
               <v-col cols="12" sm="6" md="4" class="pa-0 ma-0">
                 <v-select
                   :items="category"
-                  v-model="selectedCategory"
+                  v-model="selectedToUserCategory"
                   item-text="name"
                   item-value="name"
                   label="category"
@@ -77,14 +95,14 @@
             <v-row justify="center">
               <v-col cols="12" xs="12" sm="6" md="6" lg="6" xl="6" class="pa-0 mx-0 my-3">
                 <v-btn
-                  :disabled="!this.selectedCategory || !this.selectedGroup"
+                  :disabled="!this.selectedToUserCategory || !this.selectedGroup"
                   height="60px"
                   width="16rem"
                   color="#F52900"
                   rounded
                   :to="{name: 'qrPrint', 
                     query: {
-                    category: this.selectedCategory.name,
+                  category: this.selectedToUserCategory.name,
                     group: this.selectedGroup.groupName
                   }}"
                   target="_blank"
@@ -92,7 +110,7 @@
               </v-col>
               <v-col cols="12" xs="12" sm="6" md="6" lg="6" xl="6" class="pa-0 mx-0 my-3">
                 <v-btn
-                  :disabled="!this.selectedCategory || !this.selectedGroup"
+                  :disabled="!this.selectedToUserCategory || !this.selectedGroup"
                   height="60px"
                   width="16rem"
                   color="#F52900"
@@ -101,8 +119,9 @@
                   :to="{name: 'order', 
                     query: {
                       company: this.company ,
-                      category: this.selectedCategory.name,
-                      group: this.selectedGroup.groupName
+                      category: this.selectedToUserCategory.id,
+                    group: this.selectedGroup.groupId
+                      
                   }}"
                 >{{$t("UserPage")}}</v-btn>
               </v-col>
@@ -193,7 +212,8 @@ export default {
   mixins: [utilsMixin],
   data() {
     return {
-      selectedCategory: "",
+      selectedToOrderSheetCategory: "",
+      selectedToUserCategory: "",
       selectedGroupList: [],
       selectedGroup: "",
       groupedGroupList: [],
@@ -201,7 +221,7 @@ export default {
     };
   },
   watch: {
-    selectedCategory: function() {
+    selectedToUserCategory: function() {
       this.selectedGroup = "";
     }
   },
@@ -253,7 +273,7 @@ export default {
     setSelectedGroup: function() {
       this.selectedGroupList = [];
       for (let group of this.groupedGroupList) {
-        if (group.groupByValue === this.selectedCategory.id) {
+        if (group.groupByValue === this.selectedToUserCategory.id) {
           this.selectedGroupList = group.products;
           return;
         }

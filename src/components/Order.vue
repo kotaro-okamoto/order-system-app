@@ -140,6 +140,7 @@ export default {
   data: function() {
     return {
       db: "",
+      groupName: "",
       menuTab: "",
       buttonPattern: 0,
       menus: [],
@@ -153,6 +154,7 @@ export default {
   },
   created: function() {
     this.getMenusDb();
+    this.getGroupDb();
   },
   methods: {
     changeButton: function() {
@@ -177,6 +179,27 @@ export default {
           _this.menus = [];
           _this.menus = _this.groupBy("category", menusDbData);
         });
+    },
+    getGroupDb: function() {
+      console.log("getCategoryDb start");
+      this.db = firebase.firestore();
+      const _this = this;
+
+      this.db
+        .collection(this.company)
+        .doc("group")
+        .onSnapshot(function(doc) {
+          let groupId = _this.groupId;
+          let data = doc.data();
+          Object.keys(data).some(key => {
+            let value = data[key];
+            if (value.groupId == groupId) {
+              _this.groupName = value.groupName;
+              return true;
+            }
+          });
+        });
+      console.log("getCategoryDb end");
     },
     switchDrawerShow: function() {
       this.isDrawerShow = !this.isDrawerShow;
@@ -237,10 +260,12 @@ export default {
       let orderTime = moment(new Date()).format("HH:mm:ss");
       for (var menu of this.selectedMenus) {
         let newOrderRef = this.db.collection(this.company).doc("order");
-        let orderId = this.group + "_" + this.createRandomId();
+        let orderId = this.groupId + "_" + this.createRandomId();
         let addData = {};
         addData[orderId] = {
-          group: this.group,
+          categoryId: this.category,
+          groupId: this.groupId,
+          groupName: this.groupName,
           id: orderId,
           name: menu.name,
           count: menu.count,
@@ -272,7 +297,7 @@ export default {
     category: function() {
       return this.$route.query.category;
     },
-    group: function() {
+    groupId: function() {
       return this.$route.query.group;
     },
     activeFab: function() {

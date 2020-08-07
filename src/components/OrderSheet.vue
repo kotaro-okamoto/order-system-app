@@ -10,7 +10,7 @@
               cols="3"
               class="pa-0 text-truncate"
               align="center"
-              @click="sortItems('group')"
+              @click="sortItems('groupName')"
             >{{$t("Table")}}</v-col>
             <v-col
               cols="3"
@@ -47,11 +47,11 @@
               </v-col>
               <v-col cols="3" class="pa-0 text-truncate" align="center">
                 <span
-                  @mousedown="openText(order.data.group)"
+                  @mousedown="openText(order.data.groupName)"
                   @mouseup="closeText()"
-                  @touchstart="openText(order.data.group)"
+                  @touchstart="openText(order.data.groupName)"
                   @touchend="closeText()"
-                >{{order.data.group}}</span>
+                >{{order.data.groupName}}</span>
               </v-col>
               <v-col cols="3" class="pa-0 text-truncate" align="left">
                 <span
@@ -129,12 +129,17 @@ export default {
       .onSnapshot(function(doc) {
         _this.orders = [];
         let data = doc.data();
-        Object.keys(data).forEach(key =>
-          _this.orders.push({
-            id: data[key]["id"],
-            data: data[key]
-          })
-        );
+        Object.keys(data).forEach(key => {
+          let individualData = data[key];
+          console.log(individualData);
+          console.log(_this.category);
+          if (individualData.categoryId == _this.category) {
+            _this.orders.push({
+              id: individualData.id,
+              data: individualData
+            });
+          }
+        });
 
         let localOrdersAscPattern = _this.ordersAscPattern;
         Object.keys(localOrdersAscPattern).some(key => {
@@ -151,6 +156,9 @@ export default {
   computed: {
     company: function() {
       return this.$route.query.company;
+    },
+    category: function() {
+      return this.$route.query.category;
     }
   },
   methods: {

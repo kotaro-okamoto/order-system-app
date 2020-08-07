@@ -8,7 +8,6 @@ import OrderSheet from './components/OrderSheet.vue'
 import CategoryMaintenance from './components/CategoryMaintenance.vue'
 import GroupMaintenance from './components/GroupMaintenance.vue'
 import MenuMaintenance from './components/MenuMaintenance.vue'
-import test from './components/test.vue'
 
 Vue.use(Router)
 
@@ -54,11 +53,6 @@ export default new Router({
       path: '/menuMaintenance',
       name: 'MenuMaintenance',
       component: MenuMaintenance
-    },
-    {
-      path: '/test',
-      name: 'test',
-      component: test
     },
   ]
 })
