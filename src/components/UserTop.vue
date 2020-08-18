@@ -102,8 +102,9 @@
                   rounded
                   :to="{name: 'qrPrint', 
                     query: {
-                  category: this.selectedToUserCategory.name,
-                    group: this.selectedGroup.groupName
+                      company: this.company ,
+                      category: this.selectedToUserCategory.name,
+                      group: this.selectedGroup.groupName
                   }}"
                   target="_blank"
                 >{{$t("PrintPage")}}</v-btn>

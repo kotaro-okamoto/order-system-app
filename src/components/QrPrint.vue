@@ -35,6 +35,9 @@ export default {
     };
   },
   computed: {
+    company: function() {
+      return this.$route.query.company;
+    },
     category: function() {
       return this.$route.query.category;
     },
@@ -45,6 +48,7 @@ export default {
       let routerLink = this.$router.resolve({
         name: "order",
         query: {
+          company: this.company,
           category: this.category,
           group: this.group
         }
@@ -70,19 +74,19 @@ span {
   font-size: 30px;
 }
 
-.span-category-title{
+.span-category-title {
   margin-top: 15px;
 }
 
-.span-category-value{
+.span-category-value {
   margin-top: 10px;
 }
 
-.span-group-title{
+.span-group-title {
   margin-top: 50px;
 }
 
-.span-group-value{
+.span-group-value {
   margin-top: 10px;
   margin-bottom: 10px;
 }
